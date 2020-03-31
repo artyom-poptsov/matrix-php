@@ -3,6 +3,7 @@
 //// Constants.
 
 define("MATRIX_REGISTER_URL", "/_matrix/client/r0/admin/register");
+define("MATRIX_CLIENT_URL",   "/_matrix/client/r0");
 
 //// Helper procedures.
 
@@ -15,6 +16,70 @@ function make_mac($shared_secret, $data=[]) {
 
 class Matrix_exception extends \Exception {
 
+}
+
+class Room {
+    private $alias;
+    private $id;
+
+    public function __construct($alias, $id) {
+        $this->alias = $alias;
+        $this->id    = $id;
+    }
+
+    public function get_alias() {
+        return $this->alias;
+    }
+    public function get_id() {
+        return $this->id;
+    }
+}
+
+class Session {
+    private $server_location;
+    private $user_id;
+    private $access_token;
+
+    public function __construct($server_location, $user_id, $access_token) {
+        $this->user_id      = $user_id;
+        $this->access_token = $access_token;
+    }
+
+    public function get_user_id() {
+        return $this->user_id;
+    }
+    public function get_access_token() {
+        return $this->access_token;
+    }
+
+    /**
+     * Create a new room.
+     * @param $name
+     * @return a new room object;
+     */
+    public function create_room($name) {
+        $curl = curl_init();
+        $request_data = [ "room_alias_name" => $name ];
+
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_URL,
+                    $server_location . MATRIX_CLIENT_URL . '/createRoom');
+        curl_setopt($curl, CURLOPT_POSTFIELDS,
+                    'access_token=' . $this->access_token);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($request_data));
+        curl_setopt($curl, CURLOPT_HTTPHEADER,
+                    array('Content-Type: application/json'));
+
+        $result = curl_exec($curl);
+        curl_close($curl);
+        if ($result) {
+            $json = json_decode($result, true);
+            return new Room($json['room_alias'], $json['room_id']);
+        } else {
+            throw new Matrix_exception("Could not create a room: " . $result);
+        }
+    }
 }
 
 class Matrix {
@@ -99,6 +164,60 @@ class Matrix {
             return json_decode($result);
         } else {
             throw new Matrix_exception("Could not create a user.");
+        }
+    }
+
+    /**
+     * Get available login methods for the server.
+     * @return An assoctiative array.
+     * @throws Matrix_exception on errors.
+     */
+    public function get_available_login_methods() {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $this->server_location . MATRIX_CLIENT_URL . '/login');
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POST, 0);
+
+        $result = curl_exec($curl);
+        curl_close($curl);
+        if ($result) {
+            return json_decode($result, true);
+        } else {
+            throw new Matrix_exception("Could not execute request");
+        }
+    }
+
+    /**
+     * Try to authenticate with the server.
+     *
+     * @param $type Authentication type.
+     * @param $user Username to use.
+     * @param $password Password to use.
+     * @return A new Session object.
+     */
+    public function login($type, $user, $password) {
+        $curl = curl_init();
+
+        $request_data = [
+            'type'     => $type,
+            'user'     => $user,
+            'password' => $password
+        ];
+
+        curl_setopt($curl, CURLOPT_URL,
+                    $this->server_location . MATRIX_CLIENT_URL . '/login');
+        curl_setopt($curl, CURLOPT_HTTPHEADER,
+                    array('Content-Type: application/json'));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($request_data));
+
+        $result = curl_exec($curl);
+        curl_close($curl);
+        if ($result) {
+            $json = json_decode($result, true);
+            return new Session($this->server_location, $json['user_id'], $json['access_token']);
+        } else {
+            throw new Matrix_exception("Could not authenticate");
         }
     }
 }
