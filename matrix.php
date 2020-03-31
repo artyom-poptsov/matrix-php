@@ -50,7 +50,7 @@ class Matrix {
             // var_dump($data);
             return $data['nonce'];
         } else {
-            throw new Matrix_exception("Could not make a request.");
+            throw new Matrix_exception("Could not make a nonce request.");
         }
     }
 
@@ -60,6 +60,7 @@ class Matrix {
      * @param $password A password to use.
      * @param $is_admin Should we grant admin rights to the new user? (false by default.)
      * @param $user_type Type of the new user.
+     * @throws Matrix_exception on errors.
      */
     public function request_registration($user, $password, $is_admin = false, $user_type = '') {
         $nonce       = $this->request_nonce();
@@ -93,7 +94,12 @@ class Matrix {
 
         $result = curl_exec($curl);
         curl_close($curl);
-        var_dump($result);
+        if ($result) {
+            // var_dump($result);
+            return json_decode($result);
+        } else {
+            throw new Matrix_exception("Could not create a user.");
+        }
     }
 }
 
