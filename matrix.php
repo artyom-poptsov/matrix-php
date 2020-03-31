@@ -41,8 +41,9 @@ class Session {
     private $access_token;
 
     public function __construct($server_location, $user_id, $access_token) {
-        $this->user_id      = $user_id;
-        $this->access_token = $access_token;
+        $this->server_location = $server_location;
+        $this->user_id         = $user_id;
+        $this->access_token    = $access_token;
     }
 
     public function get_user_id() {
