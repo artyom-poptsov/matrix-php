@@ -63,7 +63,7 @@ class Session {
 
         curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_URL,
-                    $server_location . MATRIX_CLIENT_URL . '/createRoom');
+                    $this->server_location . MATRIX_CLIENT_URL . '/createRoom');
         curl_setopt($curl, CURLOPT_POSTFIELDS,
                     'access_token=' . $this->access_token);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
