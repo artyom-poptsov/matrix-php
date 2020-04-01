@@ -7,7 +7,7 @@ A simple library that allows to interact with a Matrix instance through the API.
 ## Examples
 ### Account creation
 ```
-include 'matrix.php';
+include 'Matrix.php';
 $m = new \matrix\Matrix('https://homeserver:8448', 'secret-token');
 
 // 'true' means that the created user will be granted admin rights.
@@ -17,7 +17,7 @@ $m->request_registration('alice', 'passw0rd', true);
 
 ### Login
 ```
-include 'matrix.php';
+include 'Matrix.php';
 $m = new \matrix\Matrix('https://homeserver:8448', 'secret-token');
 
 $auth_methods = $m->get_available_login_methods();
