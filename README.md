@@ -4,6 +4,34 @@ A simple library that allows to interact with a Matrix instance through the API.
 ## Dependencies
 - curl
 
+## Installation
+### Manually (on Ubuntu)
+```
+$ sudo apt install php-curl
+$ git clone https://github.com/artyom-poptsov/matrix-php.git
+```
+
+### By Composer
+Create `composer.json` in your project directory (or add dependencies to it):
+```
+{
+    "require": {
+        "artyom-poptsov/matrix-php": "dev-master"
+    },
+    "repositories": [
+        {
+            "type":  "git",
+            "url":   "https://github.com/artyom-poptsov/matrix-php"
+        }
+    ]
+}
+```
+
+Then execute:
+```
+$ composer install
+```
+
 ## Examples
 ### Account creation
 ```
