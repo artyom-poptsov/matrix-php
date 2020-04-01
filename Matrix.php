@@ -44,10 +44,12 @@ class Matrix {
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
         curl_close($curl);
-        if ($response != false) {
-            $data = json_decode($response, true);
-            // var_dump($data);
-            return $data['nonce'];
+        if ($response) {
+            $json = json_decode($response, true);
+            if (array_key_exists('errcode', $json)) {
+                throw new Matrix_exception($json['errcode'], $json['error']);
+            }
+            return $json['nonce'];
         } else {
             throw new Matrix_exception("Could not make a nonce request.");
         }
@@ -95,7 +97,7 @@ class Matrix {
         curl_close($curl);
         if ($result) {
             $json = json_decode($result, true);
-            if ($json['errcode']) {
+            if (array_key_exists('errcode', $json)) {
                 throw new Matrix_exception($json['errcode'], $json['error']);
             }
             return $json;
@@ -118,7 +120,11 @@ class Matrix {
         $result = curl_exec($curl);
         curl_close($curl);
         if ($result) {
-            return json_decode($result, true);
+            $json = json_decode($result, true);
+            if (array_key_exists('errcode', $json)) {
+                throw new Matrix_exception($json['errcode'], $json['error']);
+            }
+            return $json;
         } else {
             throw new Matrix_exception("Could not execute request");
         }
@@ -152,6 +158,9 @@ class Matrix {
         curl_close($curl);
         if ($result) {
             $json = json_decode($result, true);
+            if (array_key_exists('errcode', $json)) {
+                throw new Matrix_exception($json['errcode'], $json['error']);
+            }
             return new Session($this->server_location, $json['user_id'], $json['access_token']);
         } else {
             throw new Matrix_exception("Could not authenticate");
