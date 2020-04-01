@@ -94,8 +94,11 @@ class Matrix {
         $result = curl_exec($curl);
         curl_close($curl);
         if ($result) {
-            // var_dump($result);
-            return json_decode($result);
+            $json = json_decode($result, true);
+            if ($json['errcode']) {
+                throw new Matrix_exception($json['errcode'], $json['error']);
+            }
+            return $json;
         } else {
             throw new Matrix_exception("Could not create a user.");
         }
