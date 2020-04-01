@@ -3,6 +3,7 @@
 namespace matrix;
 
 include "Matrix_exception.php";
+include "Room.php";
 
 //// Constants.
 
@@ -17,23 +18,6 @@ function make_mac($shared_secret, $data=[]) {
 }
 
 //// Classes.
-
-class Room {
-    private $alias;
-    private $id;
-
-    public function __construct($alias, $id) {
-        $this->alias = $alias;
-        $this->id    = $id;
-    }
-
-    public function get_alias() {
-        return $this->alias;
-    }
-    public function get_id() {
-        return $this->id;
-    }
-}
 
 class Session {
     private $server_location;
