@@ -15,7 +15,21 @@ function make_mac($shared_secret, $data=[]) {
 //// Classes.
 
 class Matrix_exception extends \Exception {
-
+    private $errcode;
+    private $error;
+    public function __constructor($message) {
+        parent::__construct($message);
+    }
+    public function __construct($errcode, $error) {
+        $this->errcode = $errcode;
+        $this->error   = $error;
+    }
+    public function get_errcode() {
+        return $this->errcode;
+    }
+    public function get_error() {
+        return $this->error;
+    }
 }
 
 class Room {
@@ -57,16 +71,15 @@ class Session {
      * Create a new room.
      * @param $name
      * @return a new room object;
+     * @throws Matrix_exception on errors.
      */
     public function create_room($name) {
         $curl = curl_init();
         $request_data = [ "room_alias_name" => $name ];
 
-        curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_URL,
-                    $this->server_location . MATRIX_CLIENT_URL . '/createRoom');
-        curl_setopt($curl, CURLOPT_POSTFIELDS,
-                    'access_token=' . $this->access_token);
+                    $this->server_location . MATRIX_CLIENT_URL . '/createRoom'
+                    . '?access_token=' . $this->access_token);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($request_data));
         curl_setopt($curl, CURLOPT_HTTPHEADER,
@@ -76,9 +89,48 @@ class Session {
         curl_close($curl);
         if ($result) {
             $json = json_decode($result, true);
+            if ($json['errcode']) {
+                throw new Matrix_exception($json['errcode'], $json['error']);
+            }
+            var_dump($json);
             return new Room($json['room_alias'], $json['room_id']);
         } else {
             throw new Matrix_exception("Could not create a room: " . $result);
+        }
+    }
+
+    /**
+     * Send a message.
+     *
+     * @param $room A Room instance.
+     * @param $type Message type (e.g. 'm.text'.)
+     * @param $body Message body.
+     * @return Unique event ID that identifies the sent message.
+     * @throws Matrix_exception on errors.
+     */
+    public function send_message($room, $type, $body) {
+        $curl = curl_init();
+
+        $request_data = [
+            'msgtype' => $type,
+            'body'    => $body
+        ];
+
+        curl_setopt($curl, CURLOPT_URL,
+                    $this->server_location . MATRIX_CLIENT_URL . '/rooms/'
+                    . $room->get_id() . '/send/m.room.message'
+                    . '?access_token=' . $this->access_token);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($request_data));
+        curl_setopt($curl, CURLOPT_HTTPHEADER,
+                    array('Content-Type: application/json'));
+
+        $result = curl_exec($curl);
+        curl_close($curl);
+        if ($result) {
+            return json_decode($result, true)['event_id'];
+        } else {
+            throw new Matrix_exception("Could not send a message");
         }
     }
 }
