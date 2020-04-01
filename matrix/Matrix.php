@@ -2,10 +2,10 @@
 
 namespace matrix;
 
-include "Matrix_exception.php";
-include "Room.php";
-include "Session.php";
-include "common.php";
+include_once "Matrix_exception.php";
+include_once "Room.php";
+include_once "Session.php";
+include_once "common.php";
 
 //// Helper procedures.
 

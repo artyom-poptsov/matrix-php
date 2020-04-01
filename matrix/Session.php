@@ -2,7 +2,7 @@
 
 namespace matrix;
 
-include "common.php";
+include_once "common.php";
 
 class Session {
     private $server_location;
