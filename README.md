@@ -11,7 +11,13 @@ include 'Matrix.php';
 $m = new \matrix\Matrix('https://homeserver:8448', 'secret-token');
 
 // 'true' means that the created user will be granted admin rights.
-$m->request_registration('alice', 'passw0rd', true);
+try {
+    $m->request_registration('alice', 'passw0rd', true);
+} catch (\matrix\Matrix_exception $e) {
+    if ($e->get_errcode() == 'M_USER_IN_USE') {
+        print($e->get_error() . '\n');
+    }
+}
 
 ```
 
@@ -23,6 +29,27 @@ $m = new \matrix\Matrix('https://homeserver:8448', 'secret-token');
 $auth_methods = $m->get_available_login_methods();
 
 $session = $m->login('m.login.password', 'alice, 'passw0rd');
+```
+
+### Create a room
+```
+$session = $m->login('m.login.password', 'alice, 'passw0rd');
+
+$room = false;
+try {
+    $room = $session->create_room("test");
+} catch (\matrix\Matrix_exception $e) {
+    if ($e->get_errcode() == "M_ROOM_IN_USE") {
+        print($e->get_error() . '\n');
+    }
+}
+```
+
+### Send a message to a room
+```
+$session = $m->login('m.login.password', 'alice, 'passw0rd');
+$room = new \matrix\Room('#test:homeserver:8448, '!room-id:homeserver:8448');
+$event_id = $session->send_message($room, 'm.text', "hello");
 ```
 
 ## License
