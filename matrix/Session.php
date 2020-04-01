@@ -22,6 +22,10 @@ class Session {
         return $this->access_token;
     }
 
+    public function get_server_location() {
+        return $this->server_location;
+    }
+
     /**
      * Create a new room.
      * @param $name
