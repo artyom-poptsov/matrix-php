@@ -55,6 +55,30 @@ class Session {
     }
 
     /**
+     * Get all the user's state.
+     *
+     * @return User state.
+     * @throws Matrix_exception on errors.
+     */
+    public function sync() {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL,
+                    $this->server_location . MATRIX_CLIENT_URL . '/sync'
+                    . "?access_token=" . $this->access_token);
+        $result = curl_exec($curl);
+        curl_close($curl);
+        if ($result) {
+            $json = json_decode($result, true);
+            if (array_key_exists('errcode', $json)) {
+                throw new Matrix_exception($json['errcode'], $json['error']);
+            }
+            return $json;
+        } else {
+            throw new Matrix_exception("Could not synchronize with a server");
+        }
+    }
+
+    /**
      * Send a message.
      *
      * @param $room A Room instance.
