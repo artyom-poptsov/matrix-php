@@ -1,0 +1,18 @@
+{
+    "name": "avp/matrix-php",
+    "description": "PHP library for Matrix (https://matrix.org/) API.",
+    "type": "library",
+    "require": {
+        "curl/curl": "^2.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "license": "GNU GPL v3+",
+    "authors": [
+        {
+            "name": "Artyom V. Poptsov",
+            "email": "poptsov.artyom@gmail.com"
+        }
+    ]
+}
