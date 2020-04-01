@@ -1,4 +1,8 @@
-<?php namespace matrix;
+<?php
+
+namespace matrix;
+
+include "Matrix_exception.php";
 
 //// Constants.
 
@@ -13,24 +17,6 @@ function make_mac($shared_secret, $data=[]) {
 }
 
 //// Classes.
-
-class Matrix_exception extends \Exception {
-    private $errcode;
-    private $error;
-    public function __constructor($message) {
-        parent::__construct($message);
-    }
-    public function __construct($errcode, $error) {
-        $this->errcode = $errcode;
-        $this->error   = $error;
-    }
-    public function get_errcode() {
-        return $this->errcode;
-    }
-    public function get_error() {
-        return $this->error;
-    }
-}
 
 class Room {
     private $alias;
