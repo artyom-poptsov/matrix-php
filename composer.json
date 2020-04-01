@@ -1,5 +1,5 @@
 {
-    "name": "avp/matrix-php",
+    "name": "artyom-poptsov/matrix-php",
     "description": "PHP library for Matrix (https://matrix.org/) API.",
     "type": "library",
     "require": {
