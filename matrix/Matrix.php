@@ -6,18 +6,19 @@ include_once "Matrix_exception.php";
 include_once "Room.php";
 include_once "Session.php";
 include_once "common.php";
+include_once "Matrix_client.php";
 
 //// Helper procedures.
 
 function make_mac($shared_secret, $data=[]) {
-    var_dump(join(chr(0), $data));
+    // var_dump(join(chr(0), $data));
     return hash_hmac('sha1', join(chr(0), $data), $shared_secret);
 }
 
 //// Classes.
 
 class Matrix {
-    private $server_location;
+    private $matrix_client;
     private $shared_secret;
 
     /**
@@ -26,7 +27,7 @@ class Matrix {
      * @param $shared_secret   A shared secret from the 'homeserver.yaml'.
      */
     function __construct($server_location, $shared_secret) {
-        $this->server_location = $server_location;
+        $this->matrix_client = new Matrix_client($server_location);
         $this->shared_secret   = $shared_secret;
     }
 
@@ -37,22 +38,7 @@ class Matrix {
      * @throws Matrix_exception on errors
      */
     public function request_nonce() {
-        $url  = $this->server_location . MATRIX_REGISTER_URL;
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_HEADER, 0);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        curl_close($curl);
-        if ($response) {
-            $json = json_decode($response, true);
-            if (array_key_exists('errcode', $json)) {
-                throw new Matrix_exception($json['errcode'], $json['error']);
-            }
-            return $json['nonce'];
-        } else {
-            throw new Matrix_exception("Could not make a nonce request.");
-        }
+        return $this->matrix_client->get(MATRIX_REGISTER_URL);
     }
 
     /**
@@ -64,16 +50,14 @@ class Matrix {
      * @throws Matrix_exception on errors.
      */
     public function request_registration($user, $password, $is_admin = false, $user_type = '') {
-        $nonce       = $this->request_nonce();
-        $data_array  = [ $nonce, $user, $password ];
+        $nonce        = $this->request_nonce();
+        $data_array   = [ $nonce, $user, $password ];
         $data_array[] = $is_admin ? 'admin' : 'notadmin';
         if ($user_type != '') {
             $data_array[] = $user_type;
         }
 
         $mac = make_mac($this->shared_secret, $data_array);
-
-        var_dump($mac);
 
         $request_data = [
             'nonce'     => $nonce,
@@ -86,24 +70,7 @@ class Matrix {
             $request_data[] = $user_type;
         }
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->server_location . MATRIX_REGISTER_URL);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($request_data));
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, 1);
-
-        $result = curl_exec($curl);
-        curl_close($curl);
-        if ($result) {
-            $json = json_decode($result, true);
-            if (array_key_exists('errcode', $json)) {
-                throw new Matrix_exception($json['errcode'], $json['error']);
-            }
-            return $json;
-        } else {
-            throw new Matrix_exception("Could not create a user.");
-        }
+        return $this->matrix_client->post(MATRIX_REGISTER_URL, $request_data);
     }
 
     /**
@@ -112,22 +79,7 @@ class Matrix {
      * @throws Matrix_exception on errors.
      */
     public function get_available_login_methods() {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->server_location . MATRIX_CLIENT_URL . '/login');
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, 0);
-
-        $result = curl_exec($curl);
-        curl_close($curl);
-        if ($result) {
-            $json = json_decode($result, true);
-            if (array_key_exists('errcode', $json)) {
-                throw new Matrix_exception($json['errcode'], $json['error']);
-            }
-            return $json;
-        } else {
-            throw new Matrix_exception("Could not execute request");
-        }
+        return $this->matrix_client->get(MATRIX_CLIENT_URL . '/login');
     }
 
     /**
@@ -139,32 +91,17 @@ class Matrix {
      * @return A new Session object.
      */
     public function login($type, $user, $password) {
-        $curl = curl_init();
-
         $request_data = [
             'type'     => $type,
             'user'     => $user,
             'password' => $password
         ];
 
-        curl_setopt($curl, CURLOPT_URL,
-                    $this->server_location . MATRIX_CLIENT_URL . '/login');
-        curl_setopt($curl, CURLOPT_HTTPHEADER,
-                    array('Content-Type: application/json'));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($request_data));
-
-        $result = curl_exec($curl);
-        curl_close($curl);
-        if ($result) {
-            $json = json_decode($result, true);
-            if (array_key_exists('errcode', $json)) {
-                throw new Matrix_exception($json['errcode'], $json['error']);
-            }
-            return new Session($this->server_location, $json['user_id'], $json['access_token']);
-        } else {
-            throw new Matrix_exception("Could not authenticate");
-        }
+        $json = $this->matrix_client->post(MATRIX_CLIENT_URL . '/login',
+                                           $request_data);
+        return new Session($this->matrix_client->get_server(),
+                           $json['user_id'],
+                           $json['access_token']);
     }
 }
 
