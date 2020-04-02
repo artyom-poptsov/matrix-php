@@ -11,14 +11,20 @@ include_once "Matrix_client.php";
 //// Helper procedures.
 
 function make_mac($shared_secret, $data=[]) {
-    // var_dump(join(chr(0), $data));
     return hash_hmac('sha1', join(chr(0), $data), $shared_secret);
 }
 
 //// Classes.
 
 class Matrix {
+    /**
+     * Matrix client instance.
+     */
     private $matrix_client;
+
+    /**
+     * Shared secret for your server as a string.
+     */
     private $shared_secret;
 
     /**
