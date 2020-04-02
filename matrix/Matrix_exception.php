@@ -5,10 +5,10 @@ namespace matrix;
 class Matrix_exception extends \Exception {
     private $errcode;
     private $error;
-    public function __constructor($message) {
+    public function __construct($message) {
         parent::__construct($message);
     }
-    public function __construct($errcode, $error) {
+    public function __construct1($errcode, $error) {
         $this->errcode = $errcode;
         $this->error   = $error;
     }
