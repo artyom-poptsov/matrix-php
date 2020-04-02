@@ -56,7 +56,6 @@ class HTTP_client {
      */
     public function get($resource, $params = []) {
         curl_setopt($this->curl, CURLOPT_HEADER, 0);
-        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         if (! empty($params)) {
             $params = '?' . join("&", $params);
         } else {
