@@ -111,7 +111,7 @@ use \matrix\Matrix;
 $m       = new Matrix('https://example.org:8448', 'secret-token');
 $session = $m->login('m.login.password', 'alice, 'passw0rd');
 
-// This method call may fail if 'alice' has insufficient righs
+// This method call may fail if 'alice' has insufficient rights
 //   ("This incident will be reported", you know):
 $admin_session = $session->sudo();
 ```
