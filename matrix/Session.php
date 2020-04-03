@@ -35,9 +35,18 @@ class Session {
         return $this->matrix_client->get_server();
     }
 
+    /**
+     * Try to acquire admin rights.
+     *
+     * @return Admin_session instance on success.
+     * @throws Matrix_exception with errcode 'M_FORBIDDEN' if the user has
+     *     insufficient rights.
+     */
     public function sudo() {
-        // TODO: Check user rights.
-        return new Admin_session($this);
+        $admin_session = new Admin_session($this);
+        // Check user rights.
+        $admin_session->is_admin($this->user_id);
+        return $admin_session;
     }
 
     /**
