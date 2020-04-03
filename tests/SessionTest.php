@@ -17,5 +17,6 @@ final class SessionTest extends TestCase {
         $this->assertEquals($session->get_server_location(), $server_location);
         $this->assertEquals($session->get_user_id(),         $user_id);
         $this->assertEquals($session->get_access_token(),    $access_token);
+        $this->assertEquals($session->get_matrix_client(),   $matrix_client);
     }
 }
