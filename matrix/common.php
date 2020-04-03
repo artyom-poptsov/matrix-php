@@ -29,7 +29,7 @@ function is_fqn($name) {
  * @return A fully qualified name string.
  */
 function make_fqn($name, $server) {
-    return '@' . $username . ':' . $server;
+    return '@' . $name . ':' . $server;
 }
 
 
