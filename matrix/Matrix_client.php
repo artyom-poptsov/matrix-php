@@ -15,7 +15,7 @@ class Matrix_client extends HTTP_client {
         if ($result) {
             $json = json_decode($result, true);
             if (array_key_exists('errcode', $json)) {
-                throw new Matrix_exception($json['errcode'], $json['error']);
+                throw new Matrix_exception($json['error'], $json['errcode']);
             }
             return $json;
         } else {
