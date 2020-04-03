@@ -34,7 +34,7 @@ $ composer install
 
 ## Syncing with the upstream
 ```
-$ compuser update
+$ composer update
 ```
 
 ## Testing
