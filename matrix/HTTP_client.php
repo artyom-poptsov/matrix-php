@@ -5,10 +5,21 @@ namespace matrix;
 class HTTP_client {
     private $server;
     private $curl;
-    public function __construct($server) {
+
+    /**
+     * The main class constructor.
+     *
+     * @param $server A Matrix server URL.
+     * @param $is_debug_mode_enabled Sets whether Curl verbose mode will be
+     *    enabled or not.  Defaults to false.
+     */
+    public function __construct($server, $is_debug_mode_enabled = false) {
         $this->server = $server;
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
+        if ($is_debug_mode_enabled == true) {
+            curl_setopt($this->curl, CURLOPT_VERBOSE, true);
+        }
     }
 
     public function __destruct() {
