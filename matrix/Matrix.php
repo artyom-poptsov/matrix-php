@@ -44,7 +44,7 @@ class Matrix {
      * @throws Matrix_exception on errors
      */
     public function request_nonce() {
-        return $this->matrix_client->get(MATRIX_REGISTER_URL);
+        return $this->matrix_client->get(MATRIX_REGISTER_URL)['nonce'];
     }
 
     /**
