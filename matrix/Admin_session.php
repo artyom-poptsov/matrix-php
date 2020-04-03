@@ -49,6 +49,26 @@ class Admin_session extends Session {
     public function is_admin($user_id) {
         return $this->get_user_info($user_id)['admin'] == 1;
     }
+
+    /**
+     * Reset the password of the specified user.
+     *
+     * @param $user_id Fully qualified ID of the user.
+     * @param $new_password New password to set.
+     * @param $logout_devices Should the user be logged out from all devices?
+     *     Defaults to 'true'.
+     */
+    public function reset_password($user_id, $new_password,
+                                   $logout_devices = true) {
+        $this->matrix_client->post(
+            SYNAPSE_URL . 'admin/v1/' . 'reset_password/' . $user_id,
+            [
+                'new_password'   => $new_password,
+                'logout_devices' => $logout_devices
+            ],
+            [ 'access_token' => $this->access_token ]
+        );
+    }
 }
 
 ?>
