@@ -43,6 +43,24 @@ class HTTP_client {
     }
 
     /**
+     * Get domain name from the server URL.
+     *
+     * @return Domain name as a string.
+     */
+    public function get_domain() {
+        return parse_url($this->server)['host'];
+    }
+
+    /**
+     * Get server port from the URL.
+     *
+     * @return Port number;
+     */
+    public function get_port() {
+        return parse_url($this->server)['port'];
+    }
+
+    /**
      * Make an HTTP POST request.
      *
      * @param $resource A resource on the server to use.

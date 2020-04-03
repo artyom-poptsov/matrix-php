@@ -54,7 +54,7 @@ class Matrix {
      * @return A fully qualified name string.
      */
     public function make_fqn($name) {
-        return make_fqn($name, $this->matrix_client->get_server());
+        return make_fqn($name, $this->matrix_client->get_domain());
     }
 
     /**
