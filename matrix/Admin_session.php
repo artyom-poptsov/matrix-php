@@ -23,7 +23,6 @@ class Admin_session extends Session {
         return $json == NULL;
     }
 
-
     /**
      * Get information about a specific user.
      *
@@ -39,6 +38,16 @@ class Admin_session extends Session {
             . $username,
             [ "access_token" => $this->access_token ]);
         return ($json['errcode'] == 'M_NOT_FOUND') ? NULL : $json;
+    }
+
+    /**
+     * Check if a user has admin rights.
+     *
+     * @param $user_id ID of the user to check.
+     * @return true if the user has admin rights, false otherwise.
+     */
+    public function is_admin($user_id) {
+        return $this->get_user_info($user_id)['admin'] == 1;
     }
 }
 
