@@ -41,6 +41,18 @@ class Session {
     }
 
     /**
+     * Return information about the owner of the current access token.
+     *
+     * @return JSON response.
+     */
+    public function whoami() {
+        return $this->matrix_client->get(
+            MATRIX_CLIENT_URL . '/account/whoami',
+            [ 'access_token' => $this->access_token ]
+        );
+    }
+
+    /**
      * Create a new room.
      * @param $name
      * @return a new room object;
