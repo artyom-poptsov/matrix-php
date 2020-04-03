@@ -16,14 +16,21 @@ class HTTP_client {
     public function __construct($server, $is_debug_mode_enabled = false) {
         $this->server = $server;
         $this->curl = curl_init();
+        $this->set_debug_mode($is_debug_mode_enabled);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
-        if ($is_debug_mode_enabled == true) {
-            curl_setopt($this->curl, CURLOPT_VERBOSE, true);
-        }
     }
 
     public function __destruct() {
         curl_close($this->curl);
+    }
+
+    /**
+     * Set Curl debug mode to $value.
+     *
+     * @param $is_enabled Is debug mode enabled?
+     */
+    public function set_debug_mode($is_enabled) {
+        curl_setopt($this->curl, CURLOPT_VERBOSE, $is_enabled);
     }
 
     /**

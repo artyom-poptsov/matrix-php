@@ -38,6 +38,26 @@ class Matrix {
     }
 
     /**
+     * Set debug mode.
+     *
+     * @param $is_enabled Is debug mode enabled?
+     */
+    public function set_debug_mode($is_enabled) {
+        $this->matrix_client->set_debug_mode($is_enabled);
+    }
+
+    /**
+     * Make a user fully qualified name (FQN) on the current server based on
+     * $name.
+     *
+     * @param @name A name to use.
+     * @return A fully qualified name string.
+     */
+    public function make_fqn($name) {
+        return make_fqn($name, $this->matrix_client->get_server());
+    }
+
+    /**
      * Get 'nonce' hash from a server.
      *
      * @return String a 'nonce' value.
