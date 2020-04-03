@@ -18,7 +18,7 @@ define("SYNAPSE_API_VERSION", "v2");
  * @return true if $name is a fully qualified user name, false otherwise.
  */
 function is_fqn($name) {
-    return preg_match('/@.*:.*/', $user_id) > 0;
+    return preg_match('/@.*:.*/', $name) > 0;
 }
 
 /**
