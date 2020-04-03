@@ -34,7 +34,9 @@ class HTTP_client {
      */
     public function post($resource, $data, $params = []) {
         if (! empty($params)) {
-            $params = '?' . join("&", $params);
+            $params = '?' . join("&", array_map(function ($key, $value){
+                return $key . '=' . $value;
+            }, array_keys($params), $params));
         } else {
             $params = '';
         }
@@ -56,8 +58,11 @@ class HTTP_client {
      */
     public function get($resource, $params = []) {
         curl_setopt($this->curl, CURLOPT_HEADER, 0);
+        curl_setopt($this->curl, CURLOPT_POST, 0);
         if (! empty($params)) {
-            $params = '?' . join("&", $params);
+            $params = '?' . join("&", array_map(function ($key, $value){
+                return $key . '=' . $value;
+            }, array_keys($params), $params));
         } else {
             $params = '';
         }
