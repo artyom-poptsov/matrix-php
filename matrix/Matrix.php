@@ -105,7 +105,7 @@ class Matrix {
 
         $json = $this->matrix_client->post(MATRIX_CLIENT_URL . '/login',
                                            $request_data);
-        return new Session($this->matrix_client->get_server(),
+        return new Session($this->matrix_client,
                            $json['user_id'],
                            $json['access_token']);
     }

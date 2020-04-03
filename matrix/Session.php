@@ -6,12 +6,16 @@ include_once "common.php";
 include_once "Admin_session.php";
 
 class Session {
-    protected $server_location;
+    /**
+     * Matrix client instance.
+     */
+    protected $matrix_client;
+
     protected $user_id;
     protected $access_token;
 
-    public function __construct($server_location, $user_id, $access_token) {
-        $this->server_location = $server_location;
+    public function __construct($matrix_client, $user_id, $access_token) {
+        $this->matrix_client   = $matrix_client;
         $this->user_id         = $user_id;
         $this->access_token    = $access_token;
     }
@@ -23,8 +27,12 @@ class Session {
         return $this->access_token;
     }
 
+    public function get_matrix_client() {
+        return $this->matrix_client;
+    }
+
     public function get_server_location() {
-        return $this->server_location;
+        return $this->matrix_client->get_server();
     }
 
     public function sudo() {
@@ -39,29 +47,10 @@ class Session {
      * @throws Matrix_exception on errors.
      */
     public function create_room($name) {
-        $curl = curl_init();
-        $request_data = [ "room_alias_name" => $name ];
-
-        curl_setopt($curl, CURLOPT_URL,
-                    $this->server_location . MATRIX_CLIENT_URL . '/createRoom'
-                    . '?access_token=' . $this->access_token);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($request_data));
-        curl_setopt($curl, CURLOPT_HTTPHEADER,
-                    array('Content-Type: application/json'));
-
-        $result = curl_exec($curl);
-        curl_close($curl);
-        if ($result) {
-            $json = json_decode($result, true);
-            if ($json['errcode']) {
-                throw new Matrix_exception($json['errcode'], $json['error']);
-            }
-            var_dump($json);
-            return new Room($json['room_alias'], $json['room_id']);
-        } else {
-            throw new Matrix_exception("Could not create a room: " . $result);
-        }
+        $json = $this->matrix_client->post(MATRIX_CLIENT_URL . '/createRoom',
+                                           [ "room_alias_name" => $name ],
+                                           [ 'access_token' => $this->access_token ]);
+        return new Room($json['room_alias'], $json['room_id']);
     }
 
     /**
@@ -71,21 +60,9 @@ class Session {
      * @throws Matrix_exception on errors.
      */
     public function sync() {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL,
-                    $this->server_location . MATRIX_CLIENT_URL . '/sync'
-                    . "?access_token=" . $this->access_token);
-        $result = curl_exec($curl);
-        curl_close($curl);
-        if ($result) {
-            $json = json_decode($result, true);
-            if (array_key_exists('errcode', $json)) {
-                throw new Matrix_exception($json['errcode'], $json['error']);
-            }
-            return $json;
-        } else {
-            throw new Matrix_exception("Could not synchronize with a server");
-        }
+        return $this->matrix_client->get(
+            MATRIX_CLIENT_URL . '/sync',
+            [ 'access_token' => $this->access_token ]);
     }
 
     /**
@@ -98,29 +75,14 @@ class Session {
      * @throws Matrix_exception on errors.
      */
     public function send_message($room, $type, $body) {
-        $curl = curl_init();
-
-        $request_data = [
-            'msgtype' => $type,
-            'body'    => $body
-        ];
-
-        curl_setopt($curl, CURLOPT_URL,
-                    $this->server_location . MATRIX_CLIENT_URL . '/rooms/'
-                    . $room->get_id() . '/send/m.room.message'
-                    . '?access_token=' . $this->access_token);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($request_data));
-        curl_setopt($curl, CURLOPT_HTTPHEADER,
-                    array('Content-Type: application/json'));
-
-        $result = curl_exec($curl);
-        curl_close($curl);
-        if ($result) {
-            return json_decode($result, true)['event_id'];
-        } else {
-            throw new Matrix_exception("Could not send a message");
-        }
+        return $this->matrix_client->post(
+            MATRIX_CLIENT_URL . '/rooms/' . $room->get_id() . '/send/m.room.message',
+            [
+                'msgtype' => $type,
+                'body'    => $body
+            ],
+            [ 'access_token' => $this->access_token ]
+        );
     }
 
     /**
@@ -133,51 +95,23 @@ class Session {
      * @param $new_password New user password.
      */
     public function change_password($old_password, $new_password) {
-        $curl = curl_init();
+        $json = $this->matrix_client->post(
+            $this->server_location . MATRIX_CLIENT_URL . '/account/password',
+            [ 'new_password' => $new_password ],
+            [ 'access_token' => $this->access_token ]
+        );
 
-        $request_data = [
-            'new_password' => $new_password
-        ];
-
-        curl_setopt($curl, CURLOPT_URL,
-                    $this->server_location . MATRIX_CLIENT_URL . '/account/password'
-                    . '?access_token=' . $this->access_token);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($request_data));
-        curl_setopt($curl, CURLOPT_HTTPHEADER,
-                    array('Content-Type: application/json'));
-        $result = curl_exec($curl);
-
-        $json = null;
-        if ($result) {
-            $json = json_decode($result, true);
-            if (array_key_exists('errcode', $json)) {
-                throw new Matrix_exception($json['errcode'], $json['error']);
-            }
-        } else {
-            throw new Matrix_exception("Could not change a password");
-        }
-
-        $request_data = [
-            'auth' => [ 
-                'type' => 'm.login.password',
-                'user' => $this->user_id,
-                'password' => $old_password,
-                'session'  => $json['session']
+        $this->matrix_client->post(
+            $this->server_location . MATRIX_CLIENT_URL . '/account/password',
+            [
+                'auth' => [
+                    'type'     => 'm.login.password',
+                    'user'     => $this->user_id,
+                    'password' => $old_password,
+                    'session'  => $json['session']
+                ],
             ],
-        ];
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($request_data));
-        $result = curl_exec($curl);
-
-        curl_close($curl);
-        if ($result) {
-            $json = json_decode($result, true);
-            if (array_key_exists('errcode', $json)) {
-                throw new Matrix_exception($json['errcode'], $json['error']);
-            }
-            return $json;
-        } else {
-            throw new Matrix_exception("Could not change a password");
-        }
+            [ 'access_token' => $this->access_token ]
+        );
     }
 }
