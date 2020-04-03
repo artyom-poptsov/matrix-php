@@ -33,11 +33,17 @@ class Admin_session extends Session {
      * @throws Matrix_exception on errors.
      */
     public function get_user_info($username) {
-        $json = $this->matrix_client->get(
-            SYNAPSE_URL . 'admin/' . SYNAPSE_API_VERSION . '/users/'
-            . $username,
-            [ "access_token" => $this->access_token ]);
-        return ($json['errcode'] == 'M_NOT_FOUND') ? NULL : $json;
+        try {
+            return $this->matrix_client->get(
+                SYNAPSE_URL . 'admin/' . SYNAPSE_API_VERSION . '/users/'
+                . $username,
+                [ "access_token" => $this->access_token ]);
+        } catch(Matrix_exception $e) {
+            if ($e->get_error_code() === 'M_NOT_FOUND') {
+                return NULL;
+            }
+            throw $e;
+        }
     }
 
     /**
