@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-include "matrix/common.php";
+include_once "matrix/common.php";
 
 use \matrix\Room;
 

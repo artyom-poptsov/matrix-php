@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-include "matrix/HTTP_client.php";
+include_once "matrix/HTTP_client.php";
 
 use \matrix\HTTP_client;
 
