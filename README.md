@@ -3,6 +3,12 @@ A simple library that allows to interact with a Matrix instance through the API.
 
 ![PHP Composer](https://github.com/artyom-poptsov/matrix-php/workflows/PHP%20Composer/badge.svg)
 
+## License
+Matrix-PHP is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version. Please see `LICENSE` file for the terms of GNU General Public License.
+
 ## Dependencies
 - curl
 
@@ -134,11 +140,3 @@ $admin_session->reset_password($fqn, 'new_password', false);
 $fqn = $matrix->make_fqn('alice');
 $admin_session->deactivate_account($fqn);
 ```
-
-## License
-Matrix-PHP is free software: you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version. Please see `LICENSE` file for the terms of GNU General Public License.
-
-
