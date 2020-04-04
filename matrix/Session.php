@@ -117,13 +117,13 @@ class Session {
      */
     public function change_password($old_password, $new_password) {
         $json = $this->matrix_client->post(
-            $this->server_location . MATRIX_CLIENT_URL . '/account/password',
+            MATRIX_CLIENT_URL . '/account/password',
             [ 'new_password' => $new_password ],
             [ 'access_token' => $this->access_token ]
         );
 
         $this->matrix_client->post(
-            $this->server_location . MATRIX_CLIENT_URL . '/account/password',
+            MATRIX_CLIENT_URL . '/account/password',
             [
                 'auth' => [
                     'type'     => 'm.login.password',
