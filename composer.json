@@ -14,5 +14,8 @@
             "name": "Artyom V. Poptsov",
             "email": "poptsov.artyom@gmail.com"
         }
-    ]
+    ],
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    }
 }
