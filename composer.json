@@ -10,7 +10,7 @@
     },
     "autoload": {
         "classmap": [
-            "matrix/",
+            "matrix/"
         ]
     },
     "license": "GNU GPL v3+",
