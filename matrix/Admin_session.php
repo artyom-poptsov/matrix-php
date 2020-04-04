@@ -75,6 +75,24 @@ class Admin_session extends Session {
             [ 'access_token' => $this->access_token ]
         );
     }
+
+    /**
+     * Deactivate an account.
+     *
+     * @param $user_id ID of the user that should be deactivated.
+     * @param $should_erase Marks the user as GDPR-erased[1], if set to 'true'.
+     *     Defaults to 'false'.
+     *
+     * [1] General Data Protection Regulation (GDPR):
+     *     https://en.wikipedia.org/wiki/General_Data_Protection_Regulation
+     */
+    public function deactivate_account($user_id, $should_erase = false) {
+        $this->matrix_client->post(
+            SYNAPSE_URL . 'admin/v1/deactivate/' . $user_id,
+            [ 'erase'        => $should_erase ],
+            [ 'access_token' => $this->access_token ]
+        );
+    }
 }
 
 ?>

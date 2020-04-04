@@ -126,4 +126,32 @@ final class AdminSessionTest extends TestCase {
         $admin_session = new Admin_session($session);
         $admin_session->reset_password($user_id, $new_password);
     }
+
+    public function test_deactivate_account(): void {
+        $user_id         = '@alice:example.org';
+        $access_token    = 'secret-token';
+        $matrix_client = $this->createMock(Matrix_client::class);
+        $session       = $this->createMock(Session::class);
+
+        $matrix_client->expects($this->once())
+                      ->method('post')
+                      ->with(
+                          SYNAPSE_URL . 'admin/v1/deactivate/' . $user_id,
+                          [ 'erase'   => false ],
+                          [ 'access_token' => $access_token ]
+                      );
+
+        $session->expects($this->once())
+                ->method('get_matrix_client')
+                ->willReturn($matrix_client);
+        $session->expects($this->once())
+                ->method('get_user_id')
+                ->willReturn($user_id);
+        $session->expects($this->once())
+                ->method('get_access_token')
+                ->willReturn($access_token);
+
+        $admin_session = new Admin_session($session);
+        $admin_session->deactivate_account($user_id);
+    }
 }
