@@ -34,7 +34,13 @@ final class SessionTest extends TestCase {
                       ->method('post')
                       ->with(MATRIX_CLIENT_URL . '/createRoom',
                              [ 'room_alias_name' => $room_alias ],
-                             [ 'access_token'    => $access_token ] );
+                             [ 'access_token'    => $access_token ] )
+                      ->willReturn(
+                          [
+                              'room_alias' => $room_alias,
+                              'room_id'    => '#' . $room_alias . 'example.org'
+                          ]
+                      );
 
         $session = new Session($matrix_client, $user_id, $access_token);
         $room    = $session->create_room($room_alias);
