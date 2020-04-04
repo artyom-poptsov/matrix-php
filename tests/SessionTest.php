@@ -1,11 +1,13 @@
 <?php declare(strict_types=1);
 
 include_once "matrix/Session.php";
+include_once "matrix/Room.php";
 include_once "matrix/Matrix_client.php";
 include_once "matrix/common.php";
 
 use PHPUnit\Framework\TestCase;
 use \matrix\Session;
+use \matrix\Room;
 use \matrix\Matrix_client;
 
 final class SessionTest extends TestCase {
@@ -36,5 +38,95 @@ final class SessionTest extends TestCase {
 
         $session = new Session($matrix_client, $user_id, $access_token);
         $room    = $session->create_room($room_alias);
+    }
+
+    public function test_whoami(): void {
+        $user_id         = '@alice:example.org/';
+        $access_token    = 'secret-token';
+        $matrix_client = $this->createMock(Matrix_client::class);
+
+        $matrix_client->expects($this->once())
+                      ->method('get')
+                      ->with(MATRIX_CLIENT_URL . '/account/whoami',
+                             [ 'access_token'    => $access_token ] );
+
+        $session = new Session($matrix_client, $user_id, $access_token);
+        $room    = $session->whoami();
+    }
+
+    public function test_sync(): void {
+        $user_id         = '@alice:example.org/';
+        $access_token    = 'secret-token';
+        $matrix_client = $this->createMock(Matrix_client::class);
+
+        $matrix_client->expects($this->once())
+                      ->method('get')
+                      ->with(MATRIX_CLIENT_URL . '/sync',
+                             [ 'access_token'    => $access_token ] );
+
+        $session = new Session($matrix_client, $user_id, $access_token);
+        $session->sync();
+    }
+
+    public function test_send_message(): void {
+        $user_id         = '@alice:example.org/';
+        $access_token    = 'secret-token';
+        $room_alias      = "test-room";
+        $msg_type        = "m.text";
+        $msg_body        = "hello world";
+        $matrix_client   = $this->createMock(Matrix_client::class);
+        $room            = $this->createMock(Room::class);
+
+        $room->expects($this->once())
+             ->method('get_id')
+             ->willReturn($room_alias);
+
+        $matrix_client->expects($this->once())
+                      ->method('post')
+                      ->with(MATRIX_CLIENT_URL . '/rooms/' . $room_alias
+                             . '/send/m.room.message',
+                             [
+                                 'msgtype' => $msg_type,
+                                 'body'    => $msg_body
+                             ],
+                             [ 'access_token'    => $access_token ] );
+
+        $session = new Session($matrix_client, $user_id, $access_token);
+        $room    = $session->send_message($room, $msg_type, $msg_body);
+    }
+
+    public function test_change_password(): void {
+        $user_id         = '@alice:example.org/';
+        $access_token    = 'secret-token';
+        $room_alias      = "test-room";
+        $old_password    = 'passw0rd';
+        $new_password    = 'passw1rd';
+        $session         = 'session-test';
+        $matrix_client   = $this->createMock(Matrix_client::class);
+
+        $matrix_client->expects($this->exactly(2))
+                      ->method('post')
+                      ->withConsecutive(
+                          [
+                              MATRIX_CLIENT_URL . '/account/password',
+                              [ 'new_password' => $new_password ],
+                              [ 'access_token' => $access_token ]
+                          ],
+                          [
+                              MATRIX_CLIENT_URL . '/account/password',
+                              [
+                                  'auth' => [
+                                      'type'     => 'm.login.password',
+                                      'user'     => $user_id,
+                                      'password' => $old_password,
+                                      'session'  => $session
+                                  ],
+                              ],
+                              [ 'access_token' => $access_token ]
+                          ])
+                      ->willReturn([ 'session' => $session ]);
+        $session = new Session($matrix_client, $user_id, $access_token);
+        $session->change_password($old_password, $new_password);
+
     }
 }
