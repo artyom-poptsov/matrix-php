@@ -1,6 +1,8 @@
 # Matrix PHP
 A simple library that allows to interact with a Matrix instance through the API.
 
+![PHP Composer](https://github.com/artyom-poptsov/matrix-php/workflows/PHP%20Composer/badge.svg)
+
 ## Dependencies
 - curl
 
