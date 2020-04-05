@@ -49,6 +49,15 @@ class Matrix {
     }
 
     /**
+     * Gets the versions of the specification supported by the server.
+     *
+     * @throws Matrix_exception on errors.
+     */
+    public function versions() {
+        return $this->matrix_client->get('/_matrix/client/versions');
+    }
+
+    /**
      * Make a user fully qualified name (FQN) on the current server based on
      * $name.
      *
