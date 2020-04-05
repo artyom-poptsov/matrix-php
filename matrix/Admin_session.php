@@ -2,7 +2,24 @@
 
 namespace matrix;
 
+/**
+ * A Matrix administrator session that can be derived from a regular session by
+ * using 'Session::sudo' method.
+ *
+ * XXX: Most of the methods here are only applicable to a specific Matrix
+ *      implementation (Synapse.)
+ *
+ * @see Session::sudo
+ */
 class Admin_session extends Session {
+
+    /**
+     * The main constructor of the class that builds an Admin_session instance
+     * based on a given Session instance. Make sure that given session belongs
+     * to a user with admin rights.
+     *
+     * @param Session $session An administrator session instance.
+     */
     public function __construct($session) {
         parent::__construct($session->get_matrix_client(),
                             $session->get_user_id(),
@@ -12,9 +29,7 @@ class Admin_session extends Session {
     /**
      * Check if a username is available for registration.
      *
-     * XXX: This only works with Synapse Matrix server.
-     *
-     * @param $username Username to check.
+     * @param  string $username Username to check.
      * @return true if username is available, false otherwise.
      * @throws Matrix_exception on errors.
      */
@@ -26,9 +41,7 @@ class Admin_session extends Session {
     /**
      * Get information about a specific user.
      *
-     * XXX: This only works with Synapse Matrix server.
-     *
-     * @param $username Username to use.
+     * @param string $username Username to use.
      * @return JSON with user information; NULL if user does not exist.
      * @throws Matrix_exception on errors.
      */
@@ -49,7 +62,7 @@ class Admin_session extends Session {
     /**
      * Check if a user has admin rights.
      *
-     * @param $user_id ID of the user to check.
+     * @param string $user_id ID of the user to check.
      * @return true if the user has admin rights, false otherwise.
      */
     public function is_admin($user_id) {
@@ -59,10 +72,10 @@ class Admin_session extends Session {
     /**
      * Reset the password of the specified user.
      *
-     * @param $user_id Fully qualified ID of the user.
-     * @param $new_password New password to set.
-     * @param $logout_devices Should the user be logged out from all devices?
-     *     Defaults to 'true'.
+     * @param string  $user_id Fully qualified ID of the user.
+     * @param string  $new_password New password to set.
+     * @param boolean $logout_devices Should the user be logged out from all
+     *     devices? Defaults to 'true'.
      */
     public function reset_password($user_id, $new_password,
                                    $logout_devices = true) {
@@ -79,9 +92,9 @@ class Admin_session extends Session {
     /**
      * Deactivate an account.
      *
-     * @param $user_id ID of the user that should be deactivated.
-     * @param $should_erase Marks the user as GDPR-erased[1], if set to 'true'.
-     *     Defaults to 'false'.
+     * @param string  $user_id ID of the user that should be deactivated.
+     * @param boolean $should_erase Marks the user as GDPR-erased[1], if set to
+     *     'true'. Defaults to 'false'.
      *
      * [1] General Data Protection Regulation (GDPR):
      *     https://en.wikipedia.org/wiki/General_Data_Protection_Regulation

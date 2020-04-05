@@ -2,16 +2,26 @@
 
 namespace matrix;
 
+/**
+ * A HTTP client based on CURL.
+ */
 class HTTP_client {
+    /**
+     * Server URL.
+     */
     private $server;
+
+    /**
+     * A CURL instance.
+     */
     private $curl;
 
     /**
      * The main class constructor.
      *
-     * @param $server A Matrix server URL.
-     * @param $is_debug_mode_enabled Sets whether Curl verbose mode will be
-     *    enabled or not.  Defaults to false.
+     * @param string  $server A Matrix server URL.
+     * @param boolean $is_debug_mode_enabled Sets whether Curl verbose mode will
+     *    be enabled or not. Defaults to false.
      */
     public function __construct($server, $is_debug_mode_enabled = false) {
         $this->server = $server;
@@ -20,6 +30,9 @@ class HTTP_client {
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
     }
 
+    /**
+     * The main class destructor that closes the current CURL session.
+     */
     public function __destruct() {
         curl_close($this->curl);
     }
@@ -27,7 +40,7 @@ class HTTP_client {
     /**
      * Set Curl debug mode to $value.
      *
-     * @param $is_enabled Is debug mode enabled?
+     * @param boolean $is_enabled Is debug mode enabled?
      */
     public function set_debug_mode($is_enabled) {
         curl_setopt($this->curl, CURLOPT_VERBOSE, $is_enabled);
@@ -63,9 +76,9 @@ class HTTP_client {
     /**
      * Make an HTTP POST request.
      *
-     * @param $resource A resource on the server to use.
-     * @param $data A data array to post.
-     * @param $params Request parameters (optional.)
+     * @param string $resource A resource on the server to use.
+     * @param array  $data A data array to post.
+     * @param array  $params Request parameters (optional.)
      * @return HTTP response from the server.
      */
     public function post($resource, $data, $params = []) {
@@ -88,8 +101,8 @@ class HTTP_client {
     /**
      * Make an HTTP GET request.
      *
-     * @param $resource A resource on the server to use.
-     * @param $params Request parameters (optional.)
+     * @param string $resource A resource on the server to use.
+     * @param array  $params Request parameters (optional.)
      * @return HTTP response from the server.
      */
     public function get($resource, $params = []) {
