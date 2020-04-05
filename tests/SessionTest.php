@@ -135,4 +135,24 @@ final class SessionTest extends TestCase {
         $session->change_password($old_password, $new_password);
 
     }
+
+    public function test_logout() {
+        $user_id         = '@alice:example.org/';
+        $access_token    = 'secret-token';
+        $room_alias      = "test-room";
+        $old_password    = 'passw0rd';
+        $new_password    = 'passw1rd';
+        $session         = 'session-test';
+        $matrix_client   = $this->createMock(Matrix_client::class);
+
+        $matrix_client->expects($this->once())
+                      ->method('post')
+                      ->with(
+                          MATRIX_CLIENT_URL . '/logout',
+                          [ ],
+                          [ 'access_token' => $access_token ]
+                      );
+        $session = new Session($matrix_client, $user_id, $access_token);
+        $session->logout();
+    }
 }

@@ -135,4 +135,18 @@ class Session {
             [ 'access_token' => $this->access_token ]
         );
     }
+
+    /**
+     * End the current session by invalidating the access token. Please note
+     * that you cannot use this session after calling this method.
+     *
+     * @throws Matrix_exception on errors.
+     */
+    public function logout() {
+        $this->matrix_client->post(
+            MATRIX_CLIENT_URL . '/logout',
+            [ ],
+            [ 'access_token' => $this->access_token ]
+        );
+    }
 }
