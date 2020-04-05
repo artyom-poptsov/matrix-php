@@ -20,6 +20,14 @@ class Session {
         $this->access_token    = $access_token;
     }
 
+    /**
+     * The main destructor of the class. This calls 'Session::logout'
+     * automatically.
+     */
+    public function __destruct() {
+        $this->logout();
+    }
+
     public function get_user_id() {
         return $this->user_id;
     }
