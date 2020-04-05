@@ -29,10 +29,12 @@ class Matrix {
 
     /**
      * Matrix class constructor.
-     * @param $server_location URL of the Matrix endpoint.
-     * @param $shared_secret   A shared secret from the 'homeserver.yaml'.
+     * @param string $server_location URL of the Matrix endpoint.
+     * @param string $shared_secret A shared secret from the 'homeserver.yaml'.
+     *    If provided, this class instance can be used to manage the Matrix
+     *    server. NULL by default.
      */
-    function __construct($server_location, $shared_secret) {
+    function __construct($server_location, $shared_secret = NULL) {
         $this->matrix_client = new Matrix_client($server_location);
         $this->shared_secret   = $shared_secret;
     }
