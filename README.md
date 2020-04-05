@@ -78,11 +78,6 @@ try {
 
 ```
 
-### Change your password, if you wish
-```
-$result = $session->change_password('passw0rd', 'passw1rd');
-```
-
 ### Login to the server
 ```
 require_once('vendor/artyom-poptsov/matrix-php/matrix/Matrix.php');
@@ -95,6 +90,11 @@ $auth_methods = $m->get_available_login_methods();
 
 // Only 'm.login.password' currently supported.
 $session = $m->login('m.login.password', 'alice, 'passw0rd');
+```
+
+### Change your password, if you wish
+```
+$result = $session->change_password('passw0rd', 'passw1rd');
 ```
 
 ### Create a room (using existing session)
