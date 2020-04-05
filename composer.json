@@ -6,7 +6,8 @@
         "curl/curl": "^2.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "phpdocumentor/phpdocumentor": "2.*"
     },
     "autoload": {
         "classmap": [
@@ -21,6 +22,7 @@
         }
     ],
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/phpunit",
+        "doc":  "vendor/bin/phpdoc -d matrix/ -t doc"
     }
 }

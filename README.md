@@ -47,8 +47,15 @@ $ composer update
 
 ## Testing
 ```
-$ ./vendor/phpunit/phpunit/phpunit --testdox tests
+$ composer run-script test tests
 ```
+
+## Generating API documentation
+```
+$ composer run-script doc
+```
+
+The documentation will be stored in `doc` directory.
 
 ## Examples
 ### Account creation
