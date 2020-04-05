@@ -151,10 +151,13 @@ class Session {
      * @throws Matrix_exception on errors.
      */
     public function logout() {
-        $this->matrix_client->post(
-            MATRIX_CLIENT_URL . '/logout',
-            [ ],
-            [ 'access_token' => $this->access_token ]
-        );
+        if ($this->access_token != NULL) {
+            $this->matrix_client->post(
+                MATRIX_CLIENT_URL . '/logout',
+                [ ],
+                [ 'access_token' => $this->access_token ]
+            );
+            $this->access_token = NULL;
+        }
     }
 }
