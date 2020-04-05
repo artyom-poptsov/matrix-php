@@ -33,6 +33,14 @@ final class AdminSessionTest extends TestCase {
                           [ 'admin' => 1 ]
                       );
 
+        $matrix_client->expects($this->exactly(2))
+                      ->method('post')
+                      ->with(
+                          MATRIX_CLIENT_URL . '/logout',
+                          [ ],
+                          [ 'access_token' => $access_token ]
+                      );
+
         $result = $session->sudo();
         $this->assertInstanceOf(Admin_session::class, $result);
     }
@@ -58,6 +66,15 @@ final class AdminSessionTest extends TestCase {
                               new Matrix_exception('error', '-41')
                           )
                       );
+
+        $matrix_client->expects($this->exactly(2))
+                      ->method('post')
+                      ->with(
+                          MATRIX_CLIENT_URL . '/logout',
+                          [ ],
+                          [ 'access_token' => $access_token ]
+                      );
+
         $session->sudo();
     }
 
@@ -102,15 +119,22 @@ final class AdminSessionTest extends TestCase {
         $session       = $this->createMock(Session::class);
         $new_password  = 'passw0rd';
 
-        $matrix_client->expects($this->once())
+        $matrix_client->expects($this->exactly(2))
                       ->method('post')
-                      ->with(
-                          SYNAPSE_URL . 'admin/v1/reset_password/' . $user_id,
+                      ->withConsecutive(
                           [
-                              'new_password'   => $new_password,
-                              'logout_devices' => true
+                              SYNAPSE_URL . 'admin/v1/reset_password/' . $user_id,
+                              [
+                                  'new_password'   => $new_password,
+                                  'logout_devices' => true
+                              ],
+                              [ 'access_token' => $access_token ]
                           ],
-                          [ 'access_token' => $access_token ]
+                          [
+                              MATRIX_CLIENT_URL . '/logout',
+                              [ ],
+                              [ 'access_token' => $access_token ]
+                          ],
                       );
 
         $session->expects($this->once())
@@ -133,12 +157,19 @@ final class AdminSessionTest extends TestCase {
         $matrix_client = $this->createMock(Matrix_client::class);
         $session       = $this->createMock(Session::class);
 
-        $matrix_client->expects($this->once())
+        $matrix_client->expects($this->exactly(2))
                       ->method('post')
-                      ->with(
-                          SYNAPSE_URL . 'admin/v1/deactivate/' . $user_id,
-                          [ 'erase'   => false ],
-                          [ 'access_token' => $access_token ]
+                      ->withConsecutive(
+                          [
+                              SYNAPSE_URL . 'admin/v1/deactivate/' . $user_id,
+                              [ 'erase'   => false ],
+                              [ 'access_token' => $access_token ]
+                          ],
+                          [
+                              MATRIX_CLIENT_URL . '/logout',
+                              [ ],
+                              [ 'access_token' => $access_token ]
+                          ]
                       );
 
         $session->expects($this->once())

@@ -15,7 +15,12 @@ final class SessionTest extends TestCase {
         $server_location = 'https://homeserver';
         $user_id         = '@alice:homeserver';
         $access_token    = 'secret-token';
-        $matrix_client = new Matrix_client($server_location);
+        $matrix_client = $this->createMock(Matrix_client::class);
+
+        $matrix_client->expects($this->once())
+                      ->method('get_server')
+                      ->willReturn($server_location);
+
         $session = new Session($matrix_client, $user_id, $access_token);
         $this->assertEquals($session->get_server_location(), $server_location);
         $this->assertEquals($session->get_user_id(),         $user_id);
@@ -30,11 +35,20 @@ final class SessionTest extends TestCase {
         $room_alias      = "test-room";
         $matrix_client = $this->createMock(Matrix_client::class);
 
-        $matrix_client->expects($this->once())
+        $matrix_client->expects($this->exactly(2))
                       ->method('post')
-                      ->with(MATRIX_CLIENT_URL . '/createRoom',
-                             [ 'room_alias_name' => $room_alias ],
-                             [ 'access_token'    => $access_token ] )
+                      ->withConsecutive(
+                          [
+                              MATRIX_CLIENT_URL . '/createRoom',
+                              [ 'room_alias_name' => $room_alias ],
+                              [ 'access_token'    => $access_token ]
+                          ],
+                          [
+                              MATRIX_CLIENT_URL . '/logout',
+                              [ ],
+                              [ 'access_token' => $access_token ]
+                          ]
+                      )
                       ->willReturn(
                           [
                               'room_alias' => $room_alias,
@@ -54,7 +68,15 @@ final class SessionTest extends TestCase {
         $matrix_client->expects($this->once())
                       ->method('get')
                       ->with(MATRIX_CLIENT_URL . '/account/whoami',
-                             [ 'access_token'    => $access_token ] );
+                             [ 'access_token'    => $access_token ]);
+
+        $matrix_client->expects($this->once())
+                      ->method('post')
+                      ->with(
+                          MATRIX_CLIENT_URL . '/logout',
+                          [ ],
+                          [ 'access_token' => $access_token ]
+                      );
 
         $session = new Session($matrix_client, $user_id, $access_token);
         $room    = $session->whoami();
@@ -68,7 +90,15 @@ final class SessionTest extends TestCase {
         $matrix_client->expects($this->once())
                       ->method('get')
                       ->with(MATRIX_CLIENT_URL . '/sync',
-                             [ 'access_token'    => $access_token ] );
+                             [ 'access_token'    => $access_token ]);
+
+        $matrix_client->expects($this->once())
+                      ->method('post')
+                      ->with(
+                          MATRIX_CLIENT_URL . '/logout',
+                          [ ],
+                          [ 'access_token' => $access_token ]
+                      );
 
         $session = new Session($matrix_client, $user_id, $access_token);
         $session->sync();
@@ -87,15 +117,23 @@ final class SessionTest extends TestCase {
              ->method('get_id')
              ->willReturn($room_alias);
 
-        $matrix_client->expects($this->once())
+        $matrix_client->expects($this->exactly(2))
                       ->method('post')
-                      ->with(MATRIX_CLIENT_URL . '/rooms/' . $room_alias
-                             . '/send/m.room.message',
-                             [
-                                 'msgtype' => $msg_type,
-                                 'body'    => $msg_body
-                             ],
-                             [ 'access_token'    => $access_token ] );
+                      ->withConsecutive(
+                          [
+                              MATRIX_CLIENT_URL . '/rooms/' . $room_alias
+                              . '/send/m.room.message',
+                              [
+                                  'msgtype' => $msg_type,
+                                  'body'    => $msg_body
+                              ],
+                              [ 'access_token'    => $access_token ]
+                          ],
+                          [
+                              MATRIX_CLIENT_URL . '/logout',
+                              [ ],
+                              [ 'access_token' => $access_token ]
+                          ]);
 
         $session = new Session($matrix_client, $user_id, $access_token);
         $room    = $session->send_message($room, $msg_type, $msg_body);
@@ -110,7 +148,7 @@ final class SessionTest extends TestCase {
         $session         = 'session-test';
         $matrix_client   = $this->createMock(Matrix_client::class);
 
-        $matrix_client->expects($this->exactly(2))
+        $matrix_client->expects($this->exactly(3))
                       ->method('post')
                       ->withConsecutive(
                           [
@@ -129,7 +167,13 @@ final class SessionTest extends TestCase {
                                   ],
                               ],
                               [ 'access_token' => $access_token ]
-                          ])
+                          ],
+                          [
+                              MATRIX_CLIENT_URL . '/logout',
+                              [ ],
+                              [ 'access_token' => $access_token ]
+                          ]
+                      )
                       ->willReturn([ 'session' => $session ]);
         $session = new Session($matrix_client, $user_id, $access_token);
         $session->change_password($old_password, $new_password);
