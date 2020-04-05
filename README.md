@@ -47,7 +47,7 @@ $ composer update
 
 ## Testing
 ```
-$ composer run-script test tests
+$ composer run-script test
 ```
 
 ## Generating API documentation

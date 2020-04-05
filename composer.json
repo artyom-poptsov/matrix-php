@@ -22,7 +22,7 @@
         }
     ],
     "scripts": {
-        "test": "vendor/bin/phpunit",
+        "test": "vendor/bin/phpunit tests",
         "doc":  "vendor/bin/phpdoc -d matrix/ -t doc"
     }
 }
