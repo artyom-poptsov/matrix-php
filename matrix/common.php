@@ -1,4 +1,15 @@
 <?php
+/**
+ * common.php -- Common Matrix constants and procedures.
+ *
+ * This file contains common Matrix constants and procedures that are used in
+ * other files.
+ *
+ * @package matrix
+ * @author  Artyom V. Poptsov <poptsov.artyom@gmail.com>
+ */
+
+namespace matrix;
 
 //// Constants.
 
@@ -11,11 +22,11 @@ define("SYNAPSE_URL", "/_synapse/");
 define("SYNAPSE_API_VERSION", "v2");
 
 /**
- * Check if a $name is a fully qualified name (FQN.)  E.g.
+ * Predicate. Check if a $name is a fully qualified name (FQN.) E.g.
  *     '@avp:example.ru'
  *
- * @param $name Name to check.
- * @return true if $name is a fully qualified user name, false otherwise.
+ * @param string $name Name to check.
+ * @return boolean true if $name is a fully qualified user name, false otherwise.
  */
 function is_fqn($name) {
     return preg_match('/@.*:.*/', $name) > 0;
@@ -24,9 +35,9 @@ function is_fqn($name) {
 /**
  * Make Matrix fully qualified name (FQN.)
  *
- * @param $name Name to use.
- * @param $server Server name.
- * @return A fully qualified name string.
+ * @param string $name   Name to use.
+ * @param string $server Server name.
+ * @return string A fully qualified name.
  */
 function make_fqn($name, $server) {
     return '@' . $name . ':' . $server;
