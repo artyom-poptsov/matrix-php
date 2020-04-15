@@ -80,7 +80,7 @@ class Admin_session extends Session {
     public function reset_password($user_id, $new_password,
                                    $logout_devices = true) {
         $this->matrix_client->post(
-            SYNAPSE_URL . 'admin/v1/' . 'reset_password/' . $user_id,
+            SYNAPSE_URL . 'admin/v1/reset_password/' . $user_id,
             [
                 'new_password'   => $new_password,
                 'logout_devices' => $logout_devices
