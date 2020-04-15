@@ -6,6 +6,10 @@ namespace matrix;
  * A Matrix administrator session that can be derived from a regular session by
  * using 'Session::sudo' method.
  *
+ * Note that an Admin session obtained with 'Session::sudo' shares the access
+ * token with the parent session, so you must call either 'Session::logout' or
+ * 'Admin_session::logout' to log out from the server.
+ *
  * XXX: Most of the methods here are only applicable to a specific Matrix
  *      implementation (Synapse.)
  *

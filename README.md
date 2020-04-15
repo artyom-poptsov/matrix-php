@@ -92,6 +92,14 @@ $auth_methods = $m->get_available_login_methods();
 $session = $m->login('m.login.password', 'alice, 'passw0rd');
 ```
 
+Please note that you should explicitly call `logout` method in order to finish
+the session:
+```
+$session->logout();
+```
+
+Calling to the `logout` method invalidates the session.
+
 ### Change your password, if you wish
 ```
 $result = $session->change_password('passw0rd', 'passw1rd');

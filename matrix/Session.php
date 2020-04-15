@@ -5,6 +5,11 @@ namespace matrix;
 include_once "common.php";
 include_once "Admin_session.php";
 
+/**
+ * A Matrix session.
+ *
+ * Note that you should explicitly call 'logout' method to finish the session.
+ */
 class Session {
     /**
      * Matrix client instance.
@@ -18,14 +23,6 @@ class Session {
         $this->matrix_client   = $matrix_client;
         $this->user_id         = $user_id;
         $this->access_token    = $access_token;
-    }
-
-    /**
-     * The main destructor of the class. This calls 'Session::logout'
-     * automatically.
-     */
-    public function __destruct() {
-        $this->logout();
     }
 
     public function get_user_id() {
