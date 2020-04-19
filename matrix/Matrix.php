@@ -2,11 +2,11 @@
 
 namespace matrix;
 
-include_once "Matrix_exception.php";
-include_once "Room.php";
-include_once "Session.php";
-include_once "common.php";
-include_once "Matrix_client.php";
+require_once(dirname(__FILE__) . "/Matrix_exception.php");
+require_once(dirname(__FILE__) . "/Room.php");
+require_once(dirname(__FILE__) . "/Session.php");
+require_once(dirname(__FILE__) . "/common.php");
+require_once(dirname(__FILE__) . "/Matrix_client.php");
 
 //// Helper procedures.
 
