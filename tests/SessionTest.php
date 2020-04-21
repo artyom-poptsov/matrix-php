@@ -163,4 +163,25 @@ final class SessionTest extends TestCase {
         $session = new Session($matrix_client, $user_id, $access_token);
         $session->change_password($old_password, $new_password);
     }
+
+    public function test_get_avatar_url(): void {
+        $user_id         = '@alice:example.org/';
+        $access_token    = 'secret-token';
+        $room_alias      = "test-room";
+        $session         = 'session-test';
+        $avatar_url      = 'mxc://matrix.example.org/avatar';
+        $matrix_client   = $this->createMock(Matrix_client::class);
+
+        $matrix_client->expects($this->once())
+                      ->method('get')
+                      ->with(
+                          MATRIX_CLIENT_URL . '/profile/' . $user_id . '/avatar_url',
+                          [ 'access_token' => $access_token ]
+                      )
+                      ->willReturn([ 'avatar_url' => $avatar_url ]);
+        $session = new Session($matrix_client, $user_id, $access_token);
+        $url = $session->get_avatar_url();
+        $this->assertEquals($url, $avatar_url);
+    }
+
 }

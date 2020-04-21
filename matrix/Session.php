@@ -67,6 +67,19 @@ class Session {
     }
 
     /**
+     * Get avatar URL.
+     *
+     * @return string Avatar URL.
+     */
+    public function get_avatar_url() {
+        $json = $this->matrix_client->get(
+            MATRIX_CLIENT_URL . '/profile/' . $this->user_id . '/avatar_url',
+            [ 'access_token' => $this->access_token ]
+        );
+        return $json['avatar_url'];
+    }
+
+    /**
      * Create a new room.
      * @param $name
      * @return a new room object;
