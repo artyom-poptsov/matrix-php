@@ -89,6 +89,7 @@ class HTTP_client {
         } else {
             $params = '';
         }
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($this->curl, CURLOPT_URL,
                     $this->server . $resource . $params);
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode($data));
@@ -108,6 +109,7 @@ class HTTP_client {
     public function get($resource, $params = []) {
         curl_setopt($this->curl, CURLOPT_HEADER, 0);
         curl_setopt($this->curl, CURLOPT_POST, 0);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "GET");
         if (! empty($params)) {
             $params = '?' . join("&", array_map(function ($key, $value){
                 return $key . '=' . $value;
@@ -116,6 +118,32 @@ class HTTP_client {
             $params = '';
         }
         curl_setopt($this->curl, CURLOPT_URL, $this->server . $resource . $params);
+        return curl_exec($this->curl);
+    }
+
+    /**
+     * Make an HTTP PUT request.
+     *
+     * @param string $resource A resource on the server to use.
+     * @param array  $data A data array to put.
+     * @param array  $params Request parameters (optional.)
+     * @return HTTP response from the server.
+     */
+    public function put($resource, $data, $params = []) {
+        curl_setopt($this->curl, CURLOPT_HEADER, 0);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "PUT");
+        if (! empty($params)) {
+            $params = '?' . join("&", array_map(function ($key, $value){
+                return $key . '=' . $value;
+            }, array_keys($params), $params));
+        } else {
+            $params = '';
+        }
+
+        curl_setopt($this->curl, CURLOPT_URL, $this->server . $resource . $params);
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER,
+                    array('Content-Type: application/json'));
         return curl_exec($this->curl);
     }
 }

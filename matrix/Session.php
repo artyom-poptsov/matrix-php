@@ -80,6 +80,19 @@ class Session {
     }
 
     /**
+     * Set avatar URL.
+     *
+     * @throws Matrix_exception on errors.
+     */
+    public function set_avatar_url($url) {
+        $json = $this->matrix_client->put(
+            MATRIX_CLIENT_URL . '/profile/' . $this->user_id . '/avatar_url',
+            [ 'avatar_url'   => $url ],
+            [ 'access_token' => $this->access_token ]
+        );
+    }
+
+    /**
      * Create a new room.
      * @param $name
      * @return a new room object;

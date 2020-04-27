@@ -32,6 +32,11 @@ class Matrix_client extends HTTP_client {
         $result = parent::get($resource, $params);
         return $this->handle_result($result);
     }
+
+    public function put($resource, $data, $params = []) {
+        $result = parent::put($resource, $data, $params);
+        return $this->handle_result($result);
+    }
 }
 
 ?>
