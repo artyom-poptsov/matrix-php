@@ -151,6 +151,34 @@ class Session {
     }
 
     /**
+     * Join a room.
+     *
+     * @param object $room A room ID, alias or Room class instance.
+     * @param array $third_party_signed If the parameter was supplied,
+     *     the homeserver must verify that it matches a pending
+     *     'm.room.third_party_invite' event in the room, and perform key validity
+     *     checking if required by the event.
+     * @return string ID of a joined room.
+     * @throws Matrix_exception on errors.
+     */
+    public function join_room($room, $third_party_signed = []) {
+        if ($room instanceof Room) {
+            $room = $room->get_id();
+        }
+
+        if (! empty($third_party_signed)) {
+            $third_party_signed
+                = [ 'third_party_signed' => $third_party_signed ];
+        }
+
+        return $this->matrix_client->post(
+            MATRIX_CLIENT_URL . '/join/' . $room,
+            $third_party_signed,
+            [ 'access_token' => $this->access_token ]
+        )['room_id'];
+    }
+
+    /**
      * Change user password.
      *
      * XXX: This only works when user's old password is needed for the 2nd stage
