@@ -138,6 +138,19 @@ class Session {
     }
 
     /**
+     * Get list of joined rooms.
+     *
+     * @return array Array of joined rooms.
+     * @throws Matrix_exception on errors.
+     */
+    public function get_joined_rooms() {
+        return $this->matrix_client->get(
+            MATRIX_CLIENT_URL . '/joined_rooms',
+            [ 'access_token' => $this->access_token ]
+        )['joined_rooms'];
+    }
+
+    /**
      * Change user password.
      *
      * XXX: This only works when user's old password is needed for the 2nd stage
