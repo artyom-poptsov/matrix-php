@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace matrix;
 
 /**
@@ -23,7 +25,7 @@ class HTTP_client {
      * @param boolean $is_debug_mode_enabled Sets whether Curl verbose mode will
      *    be enabled or not. Defaults to false.
      */
-    public function __construct($server, $is_debug_mode_enabled = false) {
+    public function __construct(string $server, bool $is_debug_mode_enabled = false) {
         $this->server = $server;
         $this->curl = curl_init();
         $this->set_debug_mode($is_debug_mode_enabled);
@@ -38,12 +40,32 @@ class HTTP_client {
     }
 
     /**
+     * Get Curl handle.
+     *
+     * @return mixed Curl handle.
+     */
+    protected function get_curl() {
+        return $this->curl;
+    }
+
+    /**
+     * Set Curl option.
+     *
+     * @param int $option Option to set.
+     * @param mixed $value Value to set.
+     * @return void
+     */
+    protected function set_opt(int $option, mixed $value): void {
+        curl_setopt($this->curl, $option, $value);
+    }
+
+    /**
      * Set Curl debug mode to $value.
      *
      * @param boolean $is_enabled Is debug mode enabled?
      */
-    public function set_debug_mode($is_enabled) {
-        curl_setopt($this->curl, CURLOPT_VERBOSE, $is_enabled);
+    public function set_debug_mode(bool $is_enabled): void {
+        $this->set_opt(CURLOPT_VERBOSE, $is_enabled);
     }
 
     /**
@@ -51,7 +73,7 @@ class HTTP_client {
      *
      * @return HTTP server link as a string.
      */
-    public function get_server() {
+    public function get_server(): string {
         return $this->server;
     }
 
@@ -60,7 +82,7 @@ class HTTP_client {
      *
      * @return Domain name as a string.
      */
-    public function get_domain() {
+    public function get_domain(): string {
         return parse_url($this->server)['host'];
     }
 
@@ -69,7 +91,7 @@ class HTTP_client {
      *
      * @return Port number;
      */
-    public function get_port() {
+    public function get_port(): int {
         return parse_url($this->server)['port'];
     }
 
@@ -89,13 +111,13 @@ class HTTP_client {
         } else {
             $params = '';
         }
-        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($this->curl, CURLOPT_URL,
+        $this->set_opt(CURLOPT_CUSTOMREQUEST, "POST");
+        $this->set_opt(CURLOPT_URL,
                     $this->server . $resource . $params);
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER,
+        $this->set_opt(CURLOPT_POSTFIELDS, json_encode($data));
+        $this->set_opt(CURLOPT_HTTPHEADER,
                     array('Content-Type: application/json'));
-        curl_setopt($this->curl, CURLOPT_POST, 1);
+        $this->set_opt($this->curl, CURLOPT_POST, 1);
         return curl_exec($this->curl);
     }
 
@@ -107,9 +129,9 @@ class HTTP_client {
      * @return HTTP response from the server.
      */
     public function get($resource, $params = []) {
-        curl_setopt($this->curl, CURLOPT_HEADER, 0);
-        curl_setopt($this->curl, CURLOPT_POST, 0);
-        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "GET");
+        $this->set_opt(CURLOPT_HEADER, 0);
+        $this->set_opt(CURLOPT_POST, 0);
+        $this->set_opt(CURLOPT_CUSTOMREQUEST, "GET");
         if (! empty($params)) {
             $params = '?' . join("&", array_map(function ($key, $value){
                 return $key . '=' . $value;
@@ -117,7 +139,7 @@ class HTTP_client {
         } else {
             $params = '';
         }
-        curl_setopt($this->curl, CURLOPT_URL, $this->server . $resource . $params);
+        $this->set_opt(CURLOPT_URL, $this->server . $resource . $params);
         return curl_exec($this->curl);
     }
 
@@ -130,8 +152,8 @@ class HTTP_client {
      * @return HTTP response from the server.
      */
     public function put($resource, $data, $params = []) {
-        curl_setopt($this->curl, CURLOPT_HEADER, 0);
-        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "PUT");
+        $this->set_opt(CURLOPT_HEADER, 0);
+        $this->set_opt(CURLOPT_CUSTOMREQUEST, "PUT");
         if (! empty($params)) {
             $params = '?' . join("&", array_map(function ($key, $value){
                 return $key . '=' . $value;
@@ -140,9 +162,9 @@ class HTTP_client {
             $params = '';
         }
 
-        curl_setopt($this->curl, CURLOPT_URL, $this->server . $resource . $params);
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER,
+        $this->set_opt(CURLOPT_URL, $this->server . $resource . $params);
+        $this->set_opt(CURLOPT_POSTFIELDS, json_encode($data));
+        $this->set_opt(CURLOPT_HTTPHEADER,
                     array('Content-Type: application/json'));
         return curl_exec($this->curl);
     }
