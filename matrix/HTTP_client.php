@@ -101,9 +101,12 @@ class HTTP_client {
      * @param string $resource A resource on the server to use.
      * @param array  $data A data array to post.
      * @param array  $params Request parameters (optional.)
+     * @param array  $headers Request headers (optional.)
      * @return HTTP response from the server.
      */
-    public function post($resource, $data, $params = []) {
+    public function post($resource, $data,
+                         array $params  = [],
+                         array $headers = []) {
         if (! empty($params)) {
             $params = '?' . join("&", array_map(function ($key, $value){
                 return $key . '=' . $value;
@@ -115,8 +118,7 @@ class HTTP_client {
         $this->set_opt(CURLOPT_URL,
                     $this->server . $resource . $params);
         $this->set_opt(CURLOPT_POSTFIELDS, json_encode($data));
-        $this->set_opt(CURLOPT_HTTPHEADER,
-                    array('Content-Type: application/json'));
+        $this->set_opt(CURLOPT_HTTPHEADER, $headers);
         $this->set_opt($this->curl, CURLOPT_POST, 1);
         return curl_exec($this->curl);
     }
@@ -149,9 +151,12 @@ class HTTP_client {
      * @param string $resource A resource on the server to use.
      * @param array  $data A data array to put.
      * @param array  $params Request parameters (optional.)
+     * @param array  $headers Request headers (optional.)
      * @return HTTP response from the server.
      */
-    public function put($resource, $data, $params = []) {
+    public function put($resource, $data,
+                        array $params  = [],
+                        array $headers = []) {
         $this->set_opt(CURLOPT_HEADER, 0);
         $this->set_opt(CURLOPT_CUSTOMREQUEST, "PUT");
         if (! empty($params)) {
@@ -164,8 +169,7 @@ class HTTP_client {
 
         $this->set_opt(CURLOPT_URL, $this->server . $resource . $params);
         $this->set_opt(CURLOPT_POSTFIELDS, json_encode($data));
-        $this->set_opt(CURLOPT_HTTPHEADER,
-                    array('Content-Type: application/json'));
+        $this->set_opt(CURLOPT_HTTPHEADER, $headers);
         return curl_exec($this->curl);
     }
 }
