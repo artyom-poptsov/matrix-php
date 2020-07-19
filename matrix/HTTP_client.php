@@ -55,7 +55,7 @@ class HTTP_client {
      * @param mixed $value Value to set.
      * @return void
      */
-    protected function set_opt(int $option, mixed $value): void {
+    protected function set_opt(int $option, $value): void {
         curl_setopt($this->curl, $option, $value);
     }
 
