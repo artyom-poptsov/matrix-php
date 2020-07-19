@@ -124,6 +124,42 @@ class HTTP_client {
     }
 
     /**
+     * Post a file to a server.
+     *
+     * @param string $resource A resource on the server to use.
+     * @param string $file_path A full path to a file.
+     * @param array  $params Request parameters (optional.)
+     * @param array  $headers Request headers (optional.)
+     */
+    public function post_file(string $resource,
+                              string $file_path,
+                              array $params = [],
+                              array $headers = []) {
+        if (! empty($params)) {
+            $params = '?' . join("&", array_map(function ($key, $value){
+                return $key . '=' . $value;
+            }, array_keys($params), $params));
+        } else {
+            $params = '';
+        }
+        $file = NULL;
+        if (function_exists('curl_file_create')) {
+            $file = curl_file_create($file_path);
+        } else {
+            $file = '@' . realpath($file_path);
+        }
+        $params['file'] = $file;
+
+        $this->set_opt(CURLOPT_CUSTOMREQUEST, "POST");
+        $this->set_opt(CURLOPT_URL,
+                       $this->server . $resource . $params);
+        $this->set_opt(CURLOPT_POSTFIELDS, $data);
+        $this->set_opt(CURLOPT_HTTPHEADER, $headers);
+        $this->set_opt($this->curl, CURLOPT_POST, 1);
+        return curl_exec($this->curl);
+    }
+
+    /**
      * Make an HTTP GET request.
      *
      * @param string $resource A resource on the server to use.
