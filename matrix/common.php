@@ -16,6 +16,8 @@ namespace matrix;
 // Matrix constants.
 define("MATRIX_REGISTER_URL", "/_matrix/client/r0/admin/register");
 define("MATRIX_CLIENT_URL",   "/_matrix/client/r0");
+define('MATRIX_MEDIA_UPLOAD_URL',   '/_matrix/media/r0/upload');
+define('MATRIX_MEDIA_DOWNLOAD_URL', '/_matrix/media/r0/download');
 
 // Synapse-specific constants.
 define("SYNAPSE_URL", "/_synapse/");
