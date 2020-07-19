@@ -29,18 +29,38 @@ class Session {
         $this->access_token    = $access_token;
     }
 
+    /**
+     * Get the USER ID.
+     *
+     * @return string User ID.
+     */
     public function get_user_id() : string {
         return $this->user_id;
     }
 
+    /**
+     * Get the access token.
+     *
+     * @return string The access token (can be NULL.)
+     */
     public function get_access_token() : string {
         return $this->access_token;
     }
 
+    /**
+     * Get the Matrix client instance.
+     *
+     * @return string The Matrix client instance.
+     */
     public function get_matrix_client() : Matrix_client {
         return $this->matrix_client;
     }
 
+    /**
+     * Get the server location.
+     *
+     * @return string The server location.
+     */
     public function get_server_location() : string {
         return $this->matrix_client->get_server();
     }
