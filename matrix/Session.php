@@ -43,7 +43,7 @@ class Session {
      *
      * @return string The access token (can be NULL.)
      */
-    public function get_access_token() : string {
+    public function get_access_token() : ?string {
         return $this->access_token;
     }
 
