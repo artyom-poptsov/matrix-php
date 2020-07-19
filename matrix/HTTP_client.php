@@ -52,7 +52,7 @@ class HTTP_client {
      * Set Curl option.
      *
      * @param int $option Option to set.
-     * @param mixed $value Value to set.
+     * @param $value Value to set.
      * @return void
      */
     protected function set_opt(int $option, $value): void {
