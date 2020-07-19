@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace matrix;
 
 require_once(dirname(__FILE__) . "/common.php");
@@ -14,40 +16,43 @@ class Session {
     /**
      * Matrix client instance.
      */
-    protected $matrix_client;
+    protected Matrix_client $matrix_client;
 
-    protected $user_id;
+    protected string $user_id;
     protected $access_token;
 
-    public function __construct($matrix_client, $user_id, $access_token) {
+    public function __construct(Matrix_client $matrix_client,
+                                string $user_id,
+                                string $access_token) {
         $this->matrix_client   = $matrix_client;
         $this->user_id         = $user_id;
         $this->access_token    = $access_token;
     }
 
-    public function get_user_id() {
+    public function get_user_id() : string {
         return $this->user_id;
     }
-    public function get_access_token() {
+
+    public function get_access_token() : string {
         return $this->access_token;
     }
 
-    public function get_matrix_client() {
+    public function get_matrix_client() : Matrix_client {
         return $this->matrix_client;
     }
 
-    public function get_server_location() {
+    public function get_server_location() : string {
         return $this->matrix_client->get_server();
     }
 
     /**
      * Try to acquire admin rights.
      *
-     * @return Admin_session instance on success.
+     * @return Admin_session Administrator session instance on success.
      * @throws Matrix_exception with errcode 'M_FORBIDDEN' if the user has
      *     insufficient rights.
      */
-    public function sudo() {
+    public function sudo() : Admin_session {
         $admin_session = new Admin_session($this);
         // Check user rights.
         $admin_session->is_admin($this->user_id);
@@ -71,7 +76,7 @@ class Session {
      *
      * @return string Avatar URL.
      */
-    public function get_avatar_url() {
+    public function get_avatar_url() : string {
         $json = $this->matrix_client->get(
             MATRIX_CLIENT_URL . '/profile/' . $this->user_id . '/avatar_url',
             [ 'access_token' => $this->access_token ]
@@ -84,7 +89,7 @@ class Session {
      *
      * @throws Matrix_exception on errors.
      */
-    public function set_avatar_url($url) {
+    public function set_avatar_url(string $url) : void {
         $json = $this->matrix_client->put(
             MATRIX_CLIENT_URL . '/profile/' . $this->user_id . '/avatar_url',
             [ 'avatar_url'   => $url ],
@@ -94,11 +99,11 @@ class Session {
 
     /**
      * Create a new room.
-     * @param $name
-     * @return a new room object;
+     * @param string $name A room name.
+     * @return Room A new room instance.
      * @throws Matrix_exception on errors.
      */
-    public function create_room($name) {
+    public function create_room(string $name) : Room {
         $json = $this->matrix_client->post(MATRIX_CLIENT_URL . '/createRoom',
                                            [ "room_alias_name" => $name ],
                                            [ 'access_token' => $this->access_token ]);
@@ -126,7 +131,7 @@ class Session {
      * @return Unique event ID that identifies the sent message.
      * @throws Matrix_exception on errors.
      */
-    public function send_message($room, $type, $body) {
+    public function send_message(Room $room, string $type, string $body) {
         return $this->matrix_client->post(
             MATRIX_CLIENT_URL . '/rooms/' . $room->get_id() . '/send/m.room.message',
             [
@@ -143,7 +148,7 @@ class Session {
      * @return array Array of joined rooms.
      * @throws Matrix_exception on errors.
      */
-    public function get_joined_rooms() {
+    public function get_joined_rooms() : array {
         return $this->matrix_client->get(
             MATRIX_CLIENT_URL . '/joined_rooms',
             [ 'access_token' => $this->access_token ]
@@ -161,7 +166,7 @@ class Session {
      * @return string ID of a joined room.
      * @throws Matrix_exception on errors.
      */
-    public function join_room($room, $third_party_signed = []) {
+    public function join_room($room, array $third_party_signed = []) {
         if ($room instanceof Room) {
             $room = $room->get_id();
         }
@@ -187,7 +192,8 @@ class Session {
      * @param $old_password Old user password.
      * @param $new_password New user password.
      */
-    public function change_password($old_password, $new_password) {
+    public function change_password(string $old_password,
+                                    string $new_password) : void {
         $json = $this->matrix_client->post(
             MATRIX_CLIENT_URL . '/account/password',
             [ 'new_password' => $new_password ],
@@ -214,7 +220,7 @@ class Session {
      *
      * @throws Matrix_exception on errors.
      */
-    public function logout() {
+    public function logout() : void {
         if ($this->access_token != NULL) {
             $this->matrix_client->post(
                 MATRIX_CLIENT_URL . '/logout',
