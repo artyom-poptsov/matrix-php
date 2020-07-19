@@ -19,7 +19,7 @@ class Session {
     protected Matrix_client $matrix_client;
 
     protected string $user_id;
-    protected $access_token;
+    protected ?string $access_token;
 
     public function __construct(Matrix_client $matrix_client,
                                 string $user_id,
