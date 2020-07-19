@@ -23,10 +23,9 @@ class Matrix_client extends HTTP_client {
         }
     }
 
-    public function post($resource, $data,
-                         $params  = [],
-                         $headers = [ 'Content-Type' => 'application/json']) {
-        $result = parent::post($resource, $data, $params, $headers);
+    public function post($resource, $data, $params  = [], $_ = null) {
+        $result = parent::post($resource, json_encode($data), $params,
+                               [ 'Content-Type' => 'application/json']);
         return $this->handle_result($result);
     }
 
@@ -35,10 +34,9 @@ class Matrix_client extends HTTP_client {
         return $this->handle_result($result);
     }
 
-    public function put($resource, $data,
-                        $params  = [],
-                        $headers = [ 'Content-Type' => 'application/json']) {
-        $result = parent::put($resource, $data, $params, $headers);
+    public function put($resource, $data, $params  = [], $_ = null) {
+        $result = parent::put($resource, json_encode($data), $params,
+                              [ 'Content-Type' => 'application/json']);
         return $this->handle_result($result);
     }
 }

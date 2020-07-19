@@ -99,7 +99,7 @@ class HTTP_client {
      * Make an HTTP POST request.
      *
      * @param string $resource A resource on the server to use.
-     * @param array  $data A data array to post.
+     * @param        $data A data to post.
      * @param array  $params Request parameters (optional.)
      * @param array  $headers Request headers (optional.)
      * @return HTTP response from the server.
@@ -117,7 +117,7 @@ class HTTP_client {
         $this->set_opt(CURLOPT_CUSTOMREQUEST, "POST");
         $this->set_opt(CURLOPT_URL,
                     $this->server . $resource . $params);
-        $this->set_opt(CURLOPT_POSTFIELDS, json_encode($data));
+        $this->set_opt(CURLOPT_POSTFIELDS, $data);
         $this->set_opt(CURLOPT_HTTPHEADER, $headers);
         $this->set_opt($this->curl, CURLOPT_POST, 1);
         return curl_exec($this->curl);
@@ -149,7 +149,7 @@ class HTTP_client {
      * Make an HTTP PUT request.
      *
      * @param string $resource A resource on the server to use.
-     * @param array  $data A data array to put.
+     * @param        $data A data array to put.
      * @param array  $params Request parameters (optional.)
      * @param array  $headers Request headers (optional.)
      * @return HTTP response from the server.
@@ -168,7 +168,7 @@ class HTTP_client {
         }
 
         $this->set_opt(CURLOPT_URL, $this->server . $resource . $params);
-        $this->set_opt(CURLOPT_POSTFIELDS, json_encode($data));
+        $this->set_opt(CURLOPT_POSTFIELDS, $data);
         $this->set_opt(CURLOPT_HTTPHEADER, $headers);
         return curl_exec($this->curl);
     }
