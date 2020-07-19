@@ -11,7 +11,7 @@ class HTTP_client {
     /**
      * Server URL.
      */
-    private $server;
+    private string $server;
 
     /**
      * A CURL instance.
@@ -104,7 +104,7 @@ class HTTP_client {
      * @param array  $headers Request headers (optional.)
      * @return HTTP response from the server.
      */
-    public function post($resource, $data,
+    public function post(string $resource, $data,
                          array $params  = [],
                          array $headers = []) {
         if (! empty($params)) {
@@ -130,7 +130,7 @@ class HTTP_client {
      * @param array  $params Request parameters (optional.)
      * @return HTTP response from the server.
      */
-    public function get($resource, $params = []) {
+    public function get(string $resource, array $params = []) {
         $this->set_opt(CURLOPT_HEADER, 0);
         $this->set_opt(CURLOPT_POST, 0);
         $this->set_opt(CURLOPT_CUSTOMREQUEST, "GET");
@@ -154,7 +154,7 @@ class HTTP_client {
      * @param array  $headers Request headers (optional.)
      * @return HTTP response from the server.
      */
-    public function put($resource, $data,
+    public function put(string $resource, $data,
                         array $params  = [],
                         array $headers = []) {
         $this->set_opt(CURLOPT_HEADER, 0);
