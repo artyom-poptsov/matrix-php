@@ -148,14 +148,14 @@ class HTTP_client {
         } else {
             $file = '@' . realpath($file_path);
         }
-        $params['file'] = $file;
+        $data['file'] = $file;
 
         $this->set_opt(CURLOPT_CUSTOMREQUEST, "POST");
         $this->set_opt(CURLOPT_URL,
                        $this->server . $resource . $params);
         $this->set_opt(CURLOPT_POSTFIELDS, $data);
         $this->set_opt(CURLOPT_HTTPHEADER, $headers);
-        $this->set_opt($this->curl, CURLOPT_POST, 1);
+        $this->set_opt(CURLOPT_POST, 1);
         return curl_exec($this->curl);
     }
 
