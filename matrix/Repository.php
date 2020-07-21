@@ -17,15 +17,16 @@ class Repository {
     }
 
     public function upload(string $file_path,
-                           string $content_type) : void {
+                           string $content_type)  {
         $matrix_client = $this->session->get_matrix_client();
         $access_token  = $this->session->get_access_token();
 
-        $json = $this->matrix_client->post_file(
+        $json = $matrix_client->post_file(
             MATRIX_MEDIA_UPLOAD_URL,
             $file_path,
-            [ 'access_token' => $this->access_token ],
-            [ 'Content-Type' => $content_type       ]
+            [ 'access_token' => $access_token ],
+            [ 'Content-Type' => $content_type ]
         );
+        return $json;
     }
 }
