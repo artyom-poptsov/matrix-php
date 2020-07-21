@@ -119,7 +119,7 @@ class HTTP_client {
                     $this->server . $resource . $params);
         $this->set_opt(CURLOPT_POSTFIELDS, $data);
         $this->set_opt(CURLOPT_HTTPHEADER, $headers);
-        $this->set_opt($this->curl, CURLOPT_POST, 1);
+        $this->set_opt(CURLOPT_POST, 1);
         return curl_exec($this->curl);
     }
 
