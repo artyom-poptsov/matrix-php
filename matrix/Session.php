@@ -107,12 +107,13 @@ class Session {
     /**
      * Set avatar URL.
      *
+     * @param Content_URI Avatar URI.
      * @throws Matrix_exception on errors.
      */
-    public function set_avatar_url(string $url) : void {
+    public function set_avatar_url(Content_URI $uri) : void {
         $json = $this->matrix_client->put(
             MATRIX_CLIENT_URL . '/profile/' . $this->user_id . '/avatar_url',
-            [ 'avatar_url'   => $url ],
+            [ 'avatar_url'   => $uri->to_string() ],
             [ 'access_token' => $this->access_token ]
         );
     }

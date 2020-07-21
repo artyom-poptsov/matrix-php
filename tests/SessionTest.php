@@ -1,12 +1,14 @@
 <?php declare(strict_types=1);
 
 include_once "matrix/Session.php";
+include_once "matrix/Content_URI.php";
 include_once "matrix/Room.php";
 include_once "matrix/Matrix_client.php";
 include_once "matrix/common.php";
 
 use PHPUnit\Framework\TestCase;
 use \matrix\Session;
+use \matrix\Content_URI;
 use \matrix\Room;
 use \matrix\Matrix_client;
 
@@ -189,14 +191,14 @@ final class SessionTest extends TestCase {
         $access_token    = 'secret-token';
         $room_alias      = "test-room";
         $session         = 'session-test';
-        $avatar_url      = 'mxc://matrix.example.org/avatar';
+        $avatar_url      = new Content_URI('mxc://matrix.example.org/avatar');
         $matrix_client   = $this->createMock(Matrix_client::class);
 
         $matrix_client->expects($this->once())
                       ->method('put')
                       ->with(
                           MATRIX_CLIENT_URL . '/profile/' . $user_id . '/avatar_url',
-                          [ 'avatar_url'   => $avatar_url ],
+                          [ 'avatar_url'   => 'mxc://matrix.example.org/avatar' ],
                           [ 'access_token' => $access_token ]
                       );
         $session = new Session($matrix_client, $user_id, $access_token);
