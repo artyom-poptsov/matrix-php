@@ -7,6 +7,12 @@ use \matrix\Content_URI;
 use PHPUnit\Framework\TestCase;
 
 final class ContentURITest extends TestCase {
+    public function test_to_string(): void {
+        $content_uri = new Content_URI('mxc://example.org/OBdyNuZznTixmWfpsffMCfhO');
+        $this->assertEquals($content_uri->to_string(),
+                            'mxc://example.org/OBdyNuZznTixmWfpsffMCfhO');
+    }
+
     public function test_get_server_name(): void {
         $content_uri = new Content_URI('mxc://example.org/OBdyNuZznTixmWfpsffMCfhO');
         $this->assertEquals($content_uri->get_server_name(),

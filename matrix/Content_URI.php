@@ -19,6 +19,15 @@ class Content_URI {
     }
 
     /**
+     * Get the URI string.
+     *
+     * @return string The URI string.
+     */
+    public function to_string() : string {
+        return $this->uri;
+    }
+
+    /**
      * Get the server part of the URI.
      * @return ?string A server name.
      */
