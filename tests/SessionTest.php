@@ -183,7 +183,7 @@ final class SessionTest extends TestCase {
                       ->willReturn([ 'avatar_url' => $avatar_url ]);
         $session = new Session($matrix_client, $user_id, $access_token);
         $url = $session->get_avatar_url();
-        $this->assertEquals($url, $avatar_url);
+        $this->assertEquals($url->to_string(), $avatar_url);
     }
 
     public function test_set_avatar_url(): void {

@@ -94,14 +94,14 @@ class Session {
     /**
      * Get avatar URL.
      *
-     * @return string Avatar URL.
+     * @return Content_URI Avatar URI.
      */
-    public function get_avatar_url() : string {
+    public function get_avatar_url() : Content_URI {
         $json = $this->matrix_client->get(
             MATRIX_CLIENT_URL . '/profile/' . $this->user_id . '/avatar_url',
             [ 'access_token' => $this->access_token ]
         );
-        return $json['avatar_url'];
+        return new Content_URI($json['avatar_url']);
     }
 
     /**
