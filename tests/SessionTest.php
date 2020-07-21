@@ -182,7 +182,7 @@ final class SessionTest extends TestCase {
                       )
                       ->willReturn([ 'avatar_url' => $avatar_url ]);
         $session = new Session($matrix_client, $user_id, $access_token);
-        $url = $session->get_avatar_url();
+        $url = $session->get_avatar();
         $this->assertEquals($url->to_string(), $avatar_url);
     }
 
@@ -202,7 +202,7 @@ final class SessionTest extends TestCase {
                           [ 'access_token' => $access_token ]
                       );
         $session = new Session($matrix_client, $user_id, $access_token);
-        $session->set_avatar_url($avatar_url);
+        $session->set_avatar($avatar_url);
     }
 
 }
