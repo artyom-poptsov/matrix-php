@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
 include_once "matrix/Session.php";
-include_once "matrix/Content_URI.php";
+include_once "matrix/core/types/Content_URI.php";
 include_once "matrix/Room.php";
 include_once "matrix/Matrix_client.php";
 include_once "matrix/common.php";
 
 use PHPUnit\Framework\TestCase;
 use \matrix\Session;
-use \matrix\Content_URI;
+use \matrix\core\types\Content_URI;
 use \matrix\Room;
 use \matrix\Matrix_client;
 

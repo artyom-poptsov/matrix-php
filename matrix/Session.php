@@ -7,6 +7,8 @@ namespace matrix;
 require_once(dirname(__FILE__) . "/common.php");
 require_once(dirname(__FILE__) . "/Admin_session.php");
 
+use matrix\core\types\Content_URI;
+
 /**
  * A Matrix session.
  *

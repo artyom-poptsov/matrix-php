@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-include_once "matrix/Content_URI.php";
+include_once "matrix/core/types/Content_URI.php";
 
-use \matrix\Content_URI;
+use \matrix\core\types\Content_URI;
 
 use PHPUnit\Framework\TestCase;
 
