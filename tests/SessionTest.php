@@ -9,13 +9,14 @@ include_once "matrix/common.php";
 use PHPUnit\Framework\TestCase;
 use \matrix\Session;
 use \matrix\core\types\Content_URI;
+use \matrix\core\types\ID;
 use \matrix\Room;
 use \matrix\Matrix_client;
 
 final class SessionTest extends TestCase {
     public function test_session_creation(): void {
         $server_location = 'https://homeserver';
-        $user_id         = '@alice:homeserver';
+        $user_id         = new ID('@alice:homeserver');
         $access_token    = 'secret-token';
         $matrix_client = $this->createMock(Matrix_client::class);
 
@@ -32,7 +33,7 @@ final class SessionTest extends TestCase {
 
     public function test_logout(): void {
         $server_location = 'https://example.org/';
-        $user_id         = '@alice:example.org/';
+        $user_id         = new ID('@alice:example.org/');
         $access_token    = 'secret-token';
         $room_alias      = "test-room";
         $matrix_client = $this->createMock(Matrix_client::class);
@@ -51,7 +52,7 @@ final class SessionTest extends TestCase {
 
     public function test_create_room(): void {
         $server_location = 'https://example.org/';
-        $user_id         = '@alice:example.org/';
+        $user_id         = new ID('@alice:example.org/');
         $access_token    = 'secret-token';
         $room_alias      = "test-room";
         $matrix_client = $this->createMock(Matrix_client::class);
@@ -75,7 +76,7 @@ final class SessionTest extends TestCase {
     }
 
     public function test_whoami(): void {
-        $user_id         = '@alice:example.org/';
+        $user_id         = new ID('@alice:example.org');
         $access_token    = 'secret-token';
         $matrix_client = $this->createMock(Matrix_client::class);
 
@@ -89,7 +90,7 @@ final class SessionTest extends TestCase {
     }
 
     public function test_sync(): void {
-        $user_id         = '@alice:example.org/';
+        $user_id         = new ID('@alice:example.org');
         $access_token    = 'secret-token';
         $matrix_client = $this->createMock(Matrix_client::class);
 
@@ -103,9 +104,9 @@ final class SessionTest extends TestCase {
     }
 
     public function test_send_message(): void {
-        $user_id         = '@alice:example.org/';
+        $user_id         = new ID('@alice:example.org/');
         $access_token    = 'secret-token';
-        $room_alias      = "test-room";
+        $room_alias      = new ID("test-room");
         $msg_type        = "m.text";
         $msg_body        = "hello world";
         $matrix_client   = $this->createMock(Matrix_client::class);
@@ -118,7 +119,8 @@ final class SessionTest extends TestCase {
         $matrix_client->expects($this->once())
                       ->method('post')
                       ->with(
-                          MATRIX_CLIENT_URL . '/rooms/' . $room_alias
+                          MATRIX_CLIENT_URL . '/rooms/'
+                          . $room_alias->to_string()
                           . '/send/m.room.message',
                           [
                               'msgtype' => $msg_type,
@@ -132,9 +134,9 @@ final class SessionTest extends TestCase {
     }
 
     public function test_change_password(): void {
-        $user_id         = '@alice:example.org/';
+        $user_id         = new ID('@alice:example.org/');
         $access_token    = 'secret-token';
-        $room_alias      = "test-room";
+        $room_alias      = new ID("test-room");
         $old_password    = 'passw0rd';
         $new_password    = 'passw1rd';
         $session         = 'session-test';
@@ -167,9 +169,9 @@ final class SessionTest extends TestCase {
     }
 
     public function test_get_avatar_url(): void {
-        $user_id         = '@alice:example.org/';
+        $user_id         = new ID('@alice:example.org');
         $access_token    = 'secret-token';
-        $room_alias      = "test-room";
+        $room_alias      = new ID("test-room");
         $session         = 'session-test';
         $avatar_url      = 'mxc://matrix.example.org/avatar';
         $matrix_client   = $this->createMock(Matrix_client::class);
@@ -177,7 +179,8 @@ final class SessionTest extends TestCase {
         $matrix_client->expects($this->once())
                       ->method('get')
                       ->with(
-                          MATRIX_CLIENT_URL . '/profile/' . $user_id . '/avatar_url',
+                          MATRIX_CLIENT_URL . '/profile/'
+                          . $user_id->to_string() . '/avatar_url',
                           [ 'access_token' => $access_token ]
                       )
                       ->willReturn([ 'avatar_url' => $avatar_url ]);
@@ -187,9 +190,9 @@ final class SessionTest extends TestCase {
     }
 
     public function test_set_avatar_url(): void {
-        $user_id         = '@alice:example.org/';
+        $user_id         = new ID('@alice:example.org/');
         $access_token    = 'secret-token';
-        $room_alias      = "test-room";
+        $room_alias      = new ID("test-room");
         $session         = 'session-test';
         $avatar_url      = new Content_URI('mxc://matrix.example.org/avatar');
         $matrix_client   = $this->createMock(Matrix_client::class);
@@ -197,7 +200,8 @@ final class SessionTest extends TestCase {
         $matrix_client->expects($this->once())
                       ->method('put')
                       ->with(
-                          MATRIX_CLIENT_URL . '/profile/' . $user_id . '/avatar_url',
+                          MATRIX_CLIENT_URL . '/profile/'
+                          . $user_id->to_string() . '/avatar_url',
                           [ 'avatar_url'   => 'mxc://matrix.example.org/avatar' ],
                           [ 'access_token' => $access_token ]
                       );

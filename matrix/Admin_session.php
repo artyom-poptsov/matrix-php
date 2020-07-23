@@ -2,6 +2,10 @@
 
 namespace matrix;
 
+require_once(dirname(__FILE__) . "/core/types/ID.php");
+
+use matrix\core\types\ID;
+
 /**
  * A Matrix administrator session that can be derived from a regular session by
  * using 'Session::sudo' method.
@@ -45,15 +49,15 @@ class Admin_session extends Session {
     /**
      * Get information about a specific user.
      *
-     * @param string $username Username to use.
+     * @param ID $username Username to use.
      * @return JSON with user information; NULL if user does not exist.
      * @throws Matrix_exception on errors.
      */
-    public function get_user_info($username) {
+    public function get_user_info(ID $id) {
         try {
             return $this->matrix_client->get(
                 SYNAPSE_URL . 'admin/' . SYNAPSE_API_VERSION . '/users/'
-                . $username,
+                . $id->to_string(),
                 [ "access_token" => $this->access_token ]);
         } catch(Matrix_exception $e) {
             if ($e->get_error_code() === 'M_NOT_FOUND') {
@@ -66,17 +70,17 @@ class Admin_session extends Session {
     /**
      * Check if a user has admin rights.
      *
-     * @param string $user_id ID of the user to check.
+     * @param  ID $user_id ID of the user to check.
      * @return true if the user has admin rights, false otherwise.
      */
-    public function is_admin($user_id) {
+    public function is_admin(ID $user_id) {
         return $this->get_user_info($user_id)['admin'] == 1;
     }
 
     /**
      * Reset the password of the specified user.
      *
-     * @param string  $user_id Fully qualified ID of the user.
+     * @param ID      $user_id Fully qualified ID of the user.
      * @param string  $new_password New password to set.
      * @param boolean $logout_devices Should the user be logged out from all
      *     devices? Defaults to 'true'.
@@ -84,7 +88,7 @@ class Admin_session extends Session {
     public function reset_password($user_id, $new_password,
                                    $logout_devices = true) {
         $this->matrix_client->post(
-            SYNAPSE_URL . 'admin/v1/reset_password/' . $user_id,
+            SYNAPSE_URL . 'admin/v1/reset_password/' . $user_id->to_string(),
             [
                 'new_password'   => $new_password,
                 'logout_devices' => $logout_devices
@@ -96,7 +100,7 @@ class Admin_session extends Session {
     /**
      * Deactivate an account.
      *
-     * @param string  $user_id ID of the user that should be deactivated.
+     * @param ID      $user_id ID of the user that should be deactivated.
      * @param boolean $should_erase Marks the user as GDPR-erased[1], if set to
      *     'true'. Defaults to 'false'.
      *
@@ -105,7 +109,7 @@ class Admin_session extends Session {
      */
     public function deactivate_account($user_id, $should_erase = false) {
         $this->matrix_client->post(
-            SYNAPSE_URL . 'admin/v1/deactivate/' . $user_id,
+            SYNAPSE_URL . 'admin/v1/deactivate/' . $user_id->to_string(),
             [ 'erase'        => $should_erase ],
             [ 'access_token' => $this->access_token ]
         );

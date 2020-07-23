@@ -1,21 +1,25 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace matrix;
+
+use matrix\core\types\ID;
 
 /**
  * This class describes a Matrix room.
  */
 class Room {
-    private $alias;
-    private $id;
+    private ID $alias;
+    private ID $id;
 
     /**
      * The main constructor.
      *
      * @param $alias Room alias.
-     * @param $id    Room ID.
+     * @param ID $id Room ID.
      */
-    public function __construct($alias, $id) {
+    public function __construct(ID $alias, ID $id) {
         $this->alias = $alias;
         $this->id    = $id;
     }
@@ -25,7 +29,7 @@ class Room {
      *
      * @return The room alias.
      */
-    public function get_alias() {
+    public function get_alias() : ID {
         return $this->alias;
     }
 
@@ -34,7 +38,7 @@ class Room {
      *
      * @return The room ID.
      */
-    public function get_id() {
+    public function get_id() : ID {
         return $this->id;
     }
 }

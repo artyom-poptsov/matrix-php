@@ -4,10 +4,12 @@ declare(strict_types = 1);
 
 namespace matrix;
 
+require_once(dirname(__FILE__) . "/core/types/ID.php");
 require_once(dirname(__FILE__) . "/common.php");
 require_once(dirname(__FILE__) . "/Admin_session.php");
 
 use matrix\core\types\Content_URI;
+use matrix\core\types\ID;
 
 /**
  * A Matrix session.
@@ -20,11 +22,11 @@ class Session {
      */
     protected Matrix_client $matrix_client;
 
-    protected string $user_id;
+    protected ID $user_id;
     protected ?string $access_token;
 
     public function __construct(Matrix_client $matrix_client,
-                                string $user_id,
+                                ID $user_id,
                                 string $access_token) {
         $this->matrix_client   = $matrix_client;
         $this->user_id         = $user_id;
@@ -34,9 +36,9 @@ class Session {
     /**
      * Get the USER ID.
      *
-     * @return string User ID.
+     * @return ID User ID.
      */
-    public function get_user_id() : string {
+    public function get_user_id() : ID {
         return $this->user_id;
     }
 
@@ -100,7 +102,8 @@ class Session {
      */
     public function get_avatar() : Content_URI {
         $json = $this->matrix_client->get(
-            MATRIX_CLIENT_URL . '/profile/' . $this->user_id . '/avatar_url',
+            MATRIX_CLIENT_URL . '/profile/' . $this->user_id->to_string()
+            . '/avatar_url',
             [ 'access_token' => $this->access_token ]
         );
         return new Content_URI($json['avatar_url']);
@@ -114,7 +117,8 @@ class Session {
      */
     public function set_avatar(Content_URI $uri) : void {
         $json = $this->matrix_client->put(
-            MATRIX_CLIENT_URL . '/profile/' . $this->user_id . '/avatar_url',
+            MATRIX_CLIENT_URL . '/profile/' . $this->user_id->to_string()
+            . '/avatar_url',
             [ 'avatar_url'   => $uri->to_string() ],
             [ 'access_token' => $this->access_token ]
         );
@@ -130,7 +134,7 @@ class Session {
         $json = $this->matrix_client->post(MATRIX_CLIENT_URL . '/createRoom',
                                            [ "room_alias_name" => $name ],
                                            [ 'access_token' => $this->access_token ]);
-        return new Room($json['room_alias'], $json['room_id']);
+        return new Room(new ID($json['room_alias']), new ID($json['room_id']));
     }
 
     /**
@@ -156,7 +160,8 @@ class Session {
      */
     public function send_message(Room $room, string $type, string $body) {
         return $this->matrix_client->post(
-            MATRIX_CLIENT_URL . '/rooms/' . $room->get_id() . '/send/m.room.message',
+            MATRIX_CLIENT_URL . '/rooms/' . $room->get_id()->to_string()
+            . '/send/m.room.message',
             [
                 'msgtype' => $type,
                 'body'    => $body
@@ -191,7 +196,7 @@ class Session {
      */
     public function join_room($room, array $third_party_signed = []) {
         if ($room instanceof Room) {
-            $room = $room->get_id();
+            $room = $room->get_id()->to_string();
         }
 
         if (! empty($third_party_signed)) {

@@ -8,6 +8,7 @@ include_once "matrix/Matrix_client.php";
 include_once "matrix/common.php";
 
 use PHPUnit\Framework\TestCase;
+use \matrix\core\types\ID;
 use \matrix\Session;
 use \matrix\Admin_session;
 use \matrix\Room;
@@ -17,7 +18,7 @@ use \matrix\Matrix_exception;
 final class AdminSessionTest extends TestCase {
     public function test_successful_sudo(): void {
         $server_location = 'https://example.org';
-        $user_id         = '@alice:example.org';
+        $user_id         = new ID('@alice:example.org');
         $access_token    = 'secret-token';
         $matrix_client = $this->createMock(Matrix_client::class);
         $session = new Session($matrix_client, $user_id, $access_token);
@@ -26,7 +27,7 @@ final class AdminSessionTest extends TestCase {
                       ->method('get')
                       ->with(
                           SYNAPSE_URL . 'admin/' . SYNAPSE_API_VERSION
-                          . '/users/' . $user_id,
+                          . '/users/' . $user_id->to_string(),
                           [ 'access_token' => $access_token ]
                       )
                       ->willReturn(
@@ -39,7 +40,7 @@ final class AdminSessionTest extends TestCase {
 
     public function test_logout(): void {
         $server_location = 'https://example.org';
-        $user_id         = '@alice:example.org';
+        $user_id         = new ID('@alice:example.org');
         $access_token    = 'secret-token';
         $matrix_client = $this->createMock(Matrix_client::class);
         $session = new Session($matrix_client, $user_id, $access_token);
@@ -48,7 +49,7 @@ final class AdminSessionTest extends TestCase {
                       ->method('get')
                       ->with(
                           SYNAPSE_URL . 'admin/' . SYNAPSE_API_VERSION
-                          . '/users/' . $user_id,
+                          . '/users/' . $user_id->to_string(),
                           [ 'access_token' => $access_token ]
                       )
                       ->willReturn(
@@ -69,7 +70,7 @@ final class AdminSessionTest extends TestCase {
 
     public function test_sudo_exception(): void {
         $server_location = 'https://example.org';
-        $user_id         = '@alice:example.org';
+        $user_id         = new ID('@alice:example.org');
         $access_token    = 'secret-token';
         $matrix_client = $this->createMock(Matrix_client::class);
         $session = new Session($matrix_client, $user_id, $access_token);
@@ -80,7 +81,7 @@ final class AdminSessionTest extends TestCase {
                       ->method('get')
                       ->with(
                           SYNAPSE_URL . 'admin/' . SYNAPSE_API_VERSION
-                          . '/users/' . $user_id,
+                          . '/users/' . $user_id->to_string(),
                           [ 'access_token' => $access_token ]
                       )
                       ->will(
@@ -93,7 +94,7 @@ final class AdminSessionTest extends TestCase {
     }
 
     public function test_get_user_info_returns_null(): void {
-        $user_id         = '@alice:example.org';
+        $user_id         = new ID('@alice:example.org');
         $access_token    = 'secret-token';
         $matrix_client = $this->createMock(Matrix_client::class);
         $session       = $this->createMock(Session::class);
@@ -102,7 +103,7 @@ final class AdminSessionTest extends TestCase {
                       ->method('get')
                       ->with(
                           SYNAPSE_URL . 'admin/' . SYNAPSE_API_VERSION
-                          . '/users/' . $user_id,
+                          . '/users/' . $user_id->to_string(),
                           [ 'access_token' => $access_token ]
                       )
                       ->will(
@@ -122,12 +123,12 @@ final class AdminSessionTest extends TestCase {
                 ->willReturn($access_token);
 
         $admin_session = new Admin_session($session);
-        $result = $admin_session->get_user_info('@alice:example.org');
+        $result = $admin_session->get_user_info(new ID('@alice:example.org'));
         $this->assertNull($result);
     }
 
     public function test_reset_password(): void {
-        $user_id         = '@alice:example.org';
+        $user_id         = new ID('@alice:example.org');
         $access_token    = 'secret-token';
         $matrix_client = $this->createMock(Matrix_client::class);
         $session       = $this->createMock(Session::class);
@@ -136,7 +137,8 @@ final class AdminSessionTest extends TestCase {
         $matrix_client->expects($this->once())
                       ->method('post')
                       ->with(
-                          SYNAPSE_URL . 'admin/v1/reset_password/' . $user_id,
+                          SYNAPSE_URL . 'admin/v1/reset_password/'
+                          . $user_id->to_string(),
                           [
                               'new_password'   => $new_password,
                               'logout_devices' => true
@@ -159,7 +161,7 @@ final class AdminSessionTest extends TestCase {
     }
 
     public function test_deactivate_account(): void {
-        $user_id         = '@alice:example.org';
+        $user_id         = new ID('@alice:example.org');
         $access_token    = 'secret-token';
         $matrix_client = $this->createMock(Matrix_client::class);
         $session       = $this->createMock(Session::class);
@@ -167,7 +169,8 @@ final class AdminSessionTest extends TestCase {
         $matrix_client->expects($this->once())
                       ->method('post')
                       ->with(
-                          SYNAPSE_URL . 'admin/v1/deactivate/' . $user_id,
+                          SYNAPSE_URL . 'admin/v1/deactivate/'
+                          . $user_id->to_string(),
                           [ 'erase'   => false ],
                           [ 'access_token' => $access_token ]
                       );
