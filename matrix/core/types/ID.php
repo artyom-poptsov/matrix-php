@@ -58,7 +58,8 @@ class ID {
      * @return ?string An identity or NULL.
      */
     public function get_id() : ?string {
-        $result = preg_match("/?([^:]+):.*/",
+        $result = preg_match("/.?([^:]+):.*/",
+                             $this->id,
                              $matches);
         return ($result > 0) ? $matches[1] : NULL;
     }
@@ -69,7 +70,8 @@ class ID {
      * @return ?string The server name or NULL.
      */
     public function get_server() : ?string {
-        $result = preg_match("/?[^:]+:(.*)/",
+        $result = preg_match("/.?[^:]+:(.*)/",
+                             $this->id,
                              $matches);
         return ($result > 0) ? $matches[1] : NULL;
     }
