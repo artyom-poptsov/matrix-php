@@ -49,7 +49,8 @@ class ID {
      * @return ?string Type of the Matrix ID, or NULL if the type is unknown.
      */
     public function get_type() : ?string {
-        return TYPE_MAPPING[$this->id[0]];
+        return array_key_exists($this->id[0], TYPE_MAPPING)
+            ? TYPE_MAPPING[$this->id[0]] : NULL;
     }
 
     /**
