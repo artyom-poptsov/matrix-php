@@ -98,6 +98,22 @@ class Admin_session extends Session {
     }
 
     /**
+     * Set new display name for the specified user.
+     *
+     * @param ID $user_id Fully qualified ID of the user.
+     * @param string $new_displayname New display name to set.
+     */
+    public function set_displayname(ID $user_id, string $new_displayname) {
+        $this->matrix_client->put(
+            MATRIX_CLIENT_URL . '/profile/' . $user_id->to_string() . '/displayname',
+            [
+                'displayname'   => $new_displayname,
+            ],
+            [ 'access_token' => $this->access_token ]
+        );
+    }
+
+    /**
      * Deactivate an account.
      *
      * @param ID      $user_id ID of the user that should be deactivated.
