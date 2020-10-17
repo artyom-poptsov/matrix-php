@@ -28,7 +28,7 @@ class ID {
     /**
      * A Matrix ID.
      */
-    private string $id;
+    private $id;
 
     public function __construct(string $id) {
         $this->id = $id;
