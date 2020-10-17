@@ -85,7 +85,7 @@ class Admin_session extends Session {
      * @param boolean $logout_devices Should the user be logged out from all
      *     devices? Defaults to 'true'.
      */
-    public function reset_password($user_id, $new_password,
+    public function reset_password(ID $user_id, $new_password,
                                    $logout_devices = true) {
         $this->matrix_client->post(
             SYNAPSE_URL . 'admin/v1/reset_password/' . $user_id->to_string(),
