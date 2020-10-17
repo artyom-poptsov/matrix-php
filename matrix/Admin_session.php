@@ -42,7 +42,7 @@ class Admin_session extends Session {
      * @throws Matrix_exception on errors.
      */
     public function is_username_available($username) {
-        $json = $this->get_user_info($username);
+        $json = $this->get_user_info(new ID($username));
         return $json == NULL;
     }
 
