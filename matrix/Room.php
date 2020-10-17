@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace matrix;
 
+require_once(dirname(__FILE__) . "/core/types/ID.php");
+
 use matrix\core\types\ID;
 
 /**
