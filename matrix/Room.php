@@ -12,8 +12,8 @@ use matrix\core\types\ID;
  * This class describes a Matrix room.
  */
 class Room {
-    private ID $alias;
-    private ID $id;
+    private $alias;
+    private $id;
 
     /**
      * The main constructor.

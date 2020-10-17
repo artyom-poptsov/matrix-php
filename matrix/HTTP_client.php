@@ -11,7 +11,7 @@ class HTTP_client {
     /**
      * Server URL.
      */
-    private string $server;
+    private $server;
 
     /**
      * A CURL instance.

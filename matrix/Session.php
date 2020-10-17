@@ -20,10 +20,10 @@ class Session {
     /**
      * Matrix client instance.
      */
-    protected Matrix_client $matrix_client;
+    protected $matrix_client;
 
-    protected ID $user_id;
-    protected ?string $access_token;
+    protected $user_id;
+    protected $access_token;
 
     public function __construct(Matrix_client $matrix_client,
                                 ID $user_id,
