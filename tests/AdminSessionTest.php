@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 
-include_once "matrix/Session.php";
-include_once "matrix/Admin_session.php";
-include_once "matrix/Matrix_exception.php";
-include_once "matrix/Room.php";
-include_once "matrix/Matrix_client.php";
-include_once "matrix/common.php";
+include_once "matrix/core/Session.php";
+include_once "matrix/core/Admin_session.php";
+include_once "matrix/core/Matrix_exception.php";
+include_once "matrix/core/Room.php";
+include_once "matrix/core/Matrix_client.php";
+include_once "matrix/core/common.php";
 
 use PHPUnit\Framework\TestCase;
 use \matrix\core\types\ID;
-use \matrix\Session;
-use \matrix\Admin_session;
-use \matrix\Room;
-use \matrix\Matrix_client;
-use \matrix\Matrix_exception;
+use \matrix\core\Session;
+use \matrix\core\Admin_session;
+use \matrix\core\Room;
+use \matrix\core\Matrix_client;
+use \matrix\core\Matrix_exception;
 
 final class AdminSessionTest extends TestCase {
     public function test_successful_sudo(): void {

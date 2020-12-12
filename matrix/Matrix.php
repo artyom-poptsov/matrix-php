@@ -2,14 +2,18 @@
 
 namespace matrix;
 
-require_once(dirname(__FILE__) . "/Matrix_exception.php");
-require_once(dirname(__FILE__) . "/Room.php");
-require_once(dirname(__FILE__) . "/Session.php");
-require_once(dirname(__FILE__) . "/common.php");
-require_once(dirname(__FILE__) . "/Matrix_client.php");
+require_once(dirname(__FILE__) . "/core/Matrix_exception.php");
+require_once(dirname(__FILE__) . "/core/Room.php");
+require_once(dirname(__FILE__) . "/core/Session.php");
+require_once(dirname(__FILE__) . "/core/common.php");
+require_once(dirname(__FILE__) . "/core/Matrix_client.php");
 require_once(dirname(__FILE__) . "/core/types/ID.php");
 
 use matrix\core\types\ID;
+use matrix\core\Matrix_exception;
+use matrix\core\Room;
+use matrix\core\Session;
+use matrix\core\Matrix_client;
 
 //// Helper procedures.
 

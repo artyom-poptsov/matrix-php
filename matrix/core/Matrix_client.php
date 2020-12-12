@@ -1,9 +1,9 @@
 <?php
 
-namespace matrix;
+namespace matrix\core;
 
 require_once(dirname(__FILE__) . "/Matrix_exception.php");
-require_once(dirname(__FILE__) . "/core/net/HTTP_client.php");
+require_once(dirname(__FILE__) . "/net/HTTP_client.php");
 
 use matrix\core\net\HTTP_client;
 

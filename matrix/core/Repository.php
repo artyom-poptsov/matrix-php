@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace matrix;
+namespace matrix\core;
 
 require_once(dirname(__FILE__) . "/common.php");
 require_once(dirname(__FILE__) . "/Admin_session.php");
-require_once(dirname(__FILE__) . "/core/types/Content_URI.php");
+require_once(dirname(__FILE__) . "/types/Content_URI.php");
 
 class Repository {
     protected Session $session;

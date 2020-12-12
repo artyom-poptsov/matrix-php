@@ -1,8 +1,8 @@
 <?php
 
-namespace matrix;
+namespace matrix\core;
 
-require_once(dirname(__FILE__) . "/core/types/ID.php");
+require_once(dirname(__FILE__) . "/types/ID.php");
 
 use matrix\core\types\ID;
 

@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
 include_once "matrix/core/types/ID.php";
-include_once "matrix/Room.php";
+include_once "matrix/core/Room.php";
 
 use \matrix\core\types\ID;
-use \matrix\Room;
+use \matrix\core\Room;
 
 use PHPUnit\Framework\TestCase;
 

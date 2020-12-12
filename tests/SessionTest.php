@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-include_once "matrix/Session.php";
+include_once "matrix/core/Session.php";
 include_once "matrix/core/types/Content_URI.php";
-include_once "matrix/Room.php";
-include_once "matrix/Matrix_client.php";
-include_once "matrix/common.php";
+include_once "matrix/core/Room.php";
+include_once "matrix/core/Matrix_client.php";
+include_once "matrix/core/common.php";
 
 use PHPUnit\Framework\TestCase;
-use \matrix\Session;
+use \matrix\core\Session;
 use \matrix\core\types\Content_URI;
 use \matrix\core\types\ID;
-use \matrix\Room;
-use \matrix\Matrix_client;
+use \matrix\core\Room;
+use \matrix\core\Matrix_client;
 
 final class SessionTest extends TestCase {
     public function test_session_creation(): void {

@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace matrix;
+namespace matrix\core;
 
-require_once(dirname(__FILE__) . "/core/types/ID.php");
+require_once(dirname(__FILE__) . "/types/ID.php");
 require_once(dirname(__FILE__) . "/common.php");
 require_once(dirname(__FILE__) . "/Admin_session.php");
 

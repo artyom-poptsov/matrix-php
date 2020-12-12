@@ -1,6 +1,6 @@
 <?php
 
-namespace matrix;
+namespace matrix\core;
 
 class Matrix_exception extends \Exception {
     private $error_code;

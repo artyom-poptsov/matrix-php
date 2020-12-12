@@ -9,7 +9,7 @@
  * @author  Artyom V. Poptsov <poptsov.artyom@gmail.com>
  */
 
-namespace matrix;
+namespace matrix\core;
 
 //// Constants.
 
