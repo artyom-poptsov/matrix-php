@@ -3,7 +3,9 @@
 namespace matrix;
 
 require_once(dirname(__FILE__) . "/Matrix_exception.php");
-require_once(dirname(__FILE__) . "/HTTP_client.php");
+require_once(dirname(__FILE__) . "/core/net/HTTP_client.php");
+
+use matrix\core\net\HTTP_client;
 
 class Matrix_client extends HTTP_client {
 

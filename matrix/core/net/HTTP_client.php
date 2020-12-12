@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace matrix;
+namespace matrix\core\net;
 
 /**
  * A HTTP client based on CURL.

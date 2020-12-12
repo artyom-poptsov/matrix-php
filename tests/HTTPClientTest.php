@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-include_once "matrix/HTTP_client.php";
+include_once "matrix/core/net/HTTP_client.php";
 
-use \matrix\HTTP_client;
+use \matrix\core\net\HTTP_client;
 
 use PHPUnit\Framework\TestCase;
 
