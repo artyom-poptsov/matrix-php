@@ -127,6 +127,18 @@ class Matrix {
     }
 
     /**
+     * Gets information about the server's supported feature set and other
+     * relevant capabilities.
+     *
+     * https://matrix.org/docs/api/client-server/#!/Capabilities/getCapabilities
+     *
+     * @return array Server capabilities.
+     */
+    public function get_capabilities() {
+        return $this->matrix_client->get(MATRIX_CLIENT_URL . '/capabilities');
+    }
+
+    /**
      * Try to authenticate with the server.
      *
      * @param $type Authentication type.
