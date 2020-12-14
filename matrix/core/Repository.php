@@ -37,4 +37,15 @@ class Repository {
         );
         return new Content_URI($json['content_uri']);
     }
+
+    /**
+     * Get the media repository configuration.
+     *
+     * https://matrix.org/docs/api/client-server/#!/Media/getConfig
+     *
+     * @return array Server media repository configuration.
+     */
+    public function get_config() {
+        return $this->matrix_client->get(MATRIX_MEDIA_URL . '/config');
+    }
 }
