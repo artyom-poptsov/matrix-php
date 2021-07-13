@@ -6,7 +6,7 @@
         "curl/curl": "^2.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "9.*",
         "phpdocumentor/phpdocumentor": "2.*"
     },
     "autoload": {
