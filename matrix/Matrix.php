@@ -9,7 +9,6 @@ require_once(dirname(__FILE__) . "/core/common.php");
 require_once(dirname(__FILE__) . "/core/Matrix_client.php");
 require_once(dirname(__FILE__) . "/core/types/ID.php");
 
-use matrix\core\common;
 use matrix\core\types\ID;
 use matrix\core\Matrix_exception;
 use matrix\core\Room;
@@ -73,7 +72,7 @@ class Matrix {
      * @return A fully qualified name string.
      */
     public function make_fqn($name) {
-        return make_fqn($name, $this->matrix_client->get_domain());
+        return \matrix\core\make_fqn($name, $this->matrix_client->get_domain());
     }
 
     /**
